@@ -266,6 +266,22 @@
             opacity: 1;
         }
 
+        .quick-level-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            margin-left: 10px;
+        }
+
+        .quick-level-btn:hover {
+            opacity: 1;
+        }
+
         .scene-switch-btn {
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
@@ -805,16 +821,371 @@
         .close-btn:hover {
             background: #f0f0f0;
         }
+
+        .equipment-btn {
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        .equipment-btn:hover {
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
+        }
+
+        .equipment-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3600;
+        }
+
+        .equipment-panel.active {
+            display: flex;
+        }
+
+        .equipment-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .equipment-header h2 {
+            color: #333;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .equipment-section {
+            margin-bottom: 25px;
+        }
+
+        .equipment-section h3 {
+            color: #E91E63;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #E91E63;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .equipment-slot {
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .equipment-slot:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+            border-color: #E91E63;
+        }
+
+        .equipment-slot.equipped {
+            background: linear-gradient(145deg, #fce4ec, #ffffff);
+            border-color: #E91E63;
+        }
+
+        .slot-name {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .slot-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .equipment-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .equipment-name.empty {
+            color: #999;
+        }
+
+        /* 战斗界面样式 */
+        .battle-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 7000;
+            flex-direction: column;
+        }
+
+        .battle-overlay.active {
+            display: flex;
+        }
+
+        .battle-scene {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin-bottom: 30px;
+        }
+
+        .battle-player, .battle-monster {
+            text-align: center;
+            animation: battleEnter 0.5s ease-out;
+        }
+
+        .battle-player {
+            animation-delay: 0s;
+        }
+
+        .battle-monster {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes battleEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .battle-vs {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 0 0 20px #ff0000;
+            animation: vsPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes vsPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .character-emoji {
+            font-size: 80px;
+            margin-bottom: 10px;
+            animation: characterBounce 1s ease-in-out infinite;
+        }
+
+        .battle-monster .character-emoji {
+            animation: monsterShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes characterBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes monsterShake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .character-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .character-hp {
+            font-size: 16px;
+            color: #4CAF50;
+        }
+
+        .battle-log {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 150px;
+            overflow-y: auto;
+            color: white;
+            font-size: 14px;
+        }
+
+        .battle-log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .battle-log-entry.player-attack {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .battle-log-entry.monster-attack {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .battle-log-entry.victory {
+            background: rgba(255, 215, 0, 0.5);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .battle-log-entry.defeat {
+            background: rgba(255, 0, 0, 0.5);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .battle-timer {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 500;
+            display: none;
+        }
+
+        .battle-timer.active {
+            display: block;
+        }
+
+        .battle-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 8000;
+            animation: battleNotificationPop 2s ease-out forwards;
+        }
+
+        @keyframes battleNotificationPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        @keyframes attackRight {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(50px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes attackLeft {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(-50px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .attacking-right {
+            animation: attackRight 0.3s ease-in-out;
+        }
+
+        .attacking-left {
+            animation: attackLeft 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body>
     <div class="debug-controls">
         <button class="reset-btn" id="reset-btn">重置游戏</button>
+        <button class="quick-level-btn" id="quick-level-btn">快速升级</button>
     </div>
+
+    <div class="battle-timer" id="battle-timer">野怪出现倒计时: <span id="battle-countdown">30</span>秒</div>
 
     <div class="game-container">
         <div class="avatar-panel">
-            <div class="avatar">😊</div>
+            <div class="avatar" id="player-avatar">😊</div>
             <div class="level-display">
                 <span class="level-badge">Lv. <span id="level">1</span></span>
             </div>
@@ -859,6 +1230,9 @@
             <button class="game-btn attributes-btn" id="attributes-btn" disabled>
                 属性
             </button>
+            <button class="game-btn equipment-btn" id="equipment-btn" disabled>
+                装备
+            </button>
         </div>
     </div>
 
@@ -893,6 +1267,83 @@
             <div class="attributes-grid" id="attributes-grid">
             </div>
         </div>
+    </div>
+
+    <div class="equipment-panel" id="equipment-panel">
+        <div class="equipment-content">
+            <div class="equipment-header">
+                <h2>装备系统</h2>
+                <button class="close-btn" id="close-equipment-btn">&times;</button>
+            </div>
+            <div class="equipment-section">
+                <h3>攻击装备</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-slot" data-slot="weapon">
+                        <div class="slot-name">武器</div>
+                        <div class="slot-icon" id="slot-weapon">⚔️</div>
+                        <div class="equipment-name" id="name-weapon">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="wristguard">
+                        <div class="slot-name">护腕</div>
+                        <div class="slot-icon" id="slot-wristguard">🦾</div>
+                        <div class="equipment-name" id="name-wristguard">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="necklace">
+                        <div class="slot-name">项链</div>
+                        <div class="slot-icon" id="slot-necklace">📿</div>
+                        <div class="equipment-name" id="name-necklace">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="gloves">
+                        <div class="slot-name">手套</div>
+                        <div class="slot-icon" id="slot-gloves">🧤</div>
+                        <div class="equipment-name" id="name-gloves">空</div>
+                    </div>
+                </div>
+            </div>
+            <div class="equipment-section">
+                <h3>防御装备</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-slot" data-slot="helmet">
+                        <div class="slot-name">头盔</div>
+                        <div class="slot-icon" id="slot-helmet">⛑️</div>
+                        <div class="equipment-name" id="name-helmet">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="armor">
+                        <div class="slot-name">护甲</div>
+                        <div class="slot-icon" id="slot-armor">🦺</div>
+                        <div class="equipment-name" id="name-armor">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="shoulder">
+                        <div class="slot-name">护肩</div>
+                        <div class="slot-icon" id="slot-shoulder">🛡️</div>
+                        <div class="equipment-name" id="name-shoulder">空</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="boots">
+                        <div class="slot-name">靴子</div>
+                        <div class="slot-icon" id="slot-boots">👢</div>
+                        <div class="equipment-name" id="name-boots">空</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 战斗动画层 -->
+    <div class="battle-overlay" id="battle-overlay" style="display: none;">
+        <div class="battle-scene">
+            <div class="battle-player" id="battle-player">
+                <div class="character-emoji">😊</div>
+                <div class="character-name">玩家</div>
+                <div class="character-hp">HP: <span id="player-hp">100</span>/<span id="player-max-hp">100</span></div>
+            </div>
+            <div class="battle-vs">VS</div>
+            <div class="battle-monster" id="battle-monster">
+                <div class="character-emoji" id="monster-emoji">👹</div>
+                <div class="character-name" id="monster-name">野怪</div>
+                <div class="character-hp">HP: <span id="monster-hp">100</span>/<span id="monster-max-hp">100</span></div>
+            </div>
+        </div>
+        <div class="battle-log" id="battle-log"></div>
     </div>
 
     <script>
@@ -949,7 +1400,16 @@
                 { itemId: 'health_essence', probability: 0.004 },
                 { itemId: 'attack_pearl', probability: 0.005 },
                 { itemId: 'defense_scale', probability: 0.005 },
-                { itemId: 'accuracy_feather', probability: 0.003 }
+                { itemId: 'accuracy_feather', probability: 0.003 },
+                // 装备掉落
+                { itemId: 'iron_sword', probability: 0.008 },
+                { itemId: 'leather_wrist', probability: 0.008 },
+                { itemId: 'copper_necklace', probability: 0.008 },
+                { itemId: 'cloth_gloves', probability: 0.008 },
+                { itemId: 'leather_helmet', probability: 0.008 },
+                { itemId: 'cloth_armor', probability: 0.008 },
+                { itemId: 'leather_shoulder', probability: 0.008 },
+                { itemId: 'cloth_boots', probability: 0.008 }
             ],
             4: [ // 神秘洞穴 (Lv.20)
                 { itemId: 'xiao_huan_dan', probability: 0.06 },
@@ -959,7 +1419,16 @@
                 { itemId: 'attack_stone', probability: 0.004 },
                 { itemId: 'defense_scale', probability: 0.004 },
                 { itemId: 'evasion_wind', probability: 0.003 },
-                { itemId: 'crit_fang', probability: 0.002 }
+                { itemId: 'crit_fang', probability: 0.002 },
+                // 装备掉落
+                { itemId: 'iron_sword', probability: 0.006 },
+                { itemId: 'leather_wrist', probability: 0.006 },
+                { itemId: 'copper_necklace', probability: 0.006 },
+                { itemId: 'cloth_gloves', probability: 0.006 },
+                { itemId: 'leather_helmet', probability: 0.006 },
+                { itemId: 'cloth_armor', probability: 0.006 },
+                { itemId: 'leather_shoulder', probability: 0.006 },
+                { itemId: 'cloth_boots', probability: 0.006 }
             ],
             5: [ // 繁华都市 (Lv.25)
                 { itemId: 'da_huan_dan', probability: 0.06 },
@@ -969,7 +1438,16 @@
                 { itemId: 'attack_stone', probability: 0.003 },
                 { itemId: 'defense_essence', probability: 0.002 },
                 { itemId: 'accuracy_feather', probability: 0.003 },
-                { itemId: 'crit_fang', probability: 0.002 }
+                { itemId: 'crit_fang', probability: 0.002 },
+                // 装备掉落 - Lv.25装备
+                { itemId: 'steel_blade', probability: 0.005 },
+                { itemId: 'iron_wrist', probability: 0.005 },
+                { itemId: 'copper_necklace', probability: 0.005 },
+                { itemId: 'cloth_gloves', probability: 0.005 },
+                { itemId: 'leather_helmet', probability: 0.005 },
+                { itemId: 'cloth_armor', probability: 0.005 },
+                { itemId: 'leather_shoulder', probability: 0.005 },
+                { itemId: 'cloth_boots', probability: 0.005 }
             ],
             6: [ // 海底世界 (Lv.30)
                 { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.05 },
@@ -1121,7 +1599,48 @@
             // 暴击防御属性物品
             { id: 'crit_def_horn', name: '防御尖角', emoji: '🦏', description: '犀牛的防御尖角，永久提升暴击防御', statType: 'critDef', statValue: 1, requiredLevel: 12, type: 'stat' },
             { id: 'crit_def_shield', name: '暴击护盾', emoji: '🛡️', description: '蕴含防御能量的护盾，大幅提升暴击防御', statType: 'critDef', statValue: 3, requiredLevel: 32, type: 'stat' },
-            { id: 'crit_def_crystal', name: '防御水晶', emoji: '🔰', description: '蕴含坚韧能量的水晶，极大提升暴击防御', statType: 'critDef', statValue: 12, requiredLevel: 55, type: 'stat' }
+            { id: 'crit_def_crystal', name: '防御水晶', emoji: '🔰', description: '蕴含坚韧能量的水晶，极大提升暴击防御', statType: 'critDef', statValue: 12, requiredLevel: 55, type: 'stat' },
+
+            // 装备物品 - 武器
+            { id: 'iron_sword', name: '铁剑', emoji: '🗡️', description: '普通的铁剑', requiredLevel: 15, type: 'equipment', slot: 'weapon', stats: { attack: 5 } },
+            { id: 'steel_blade', name: '钢刃', emoji: '⚔️', description: '精钢打造的利刃', requiredLevel: 25, type: 'equipment', slot: 'weapon', stats: { attack: 12 } },
+            { id: 'jade_sword', name: '玉剑', emoji: '💎', description: '美玉打造的剑', requiredLevel: 35, type: 'equipment', slot: 'weapon', stats: { attack: 20, crit: 2 } },
+            { id: 'dragon_blade', name: '龙刃', emoji: '🐉', description: '传说中的龙之刃', requiredLevel: 50, type: 'equipment', slot: 'weapon', stats: { attack: 35, crit: 5 } },
+
+            // 装备物品 - 护腕
+            { id: 'leather_wrist', name: '皮护腕', emoji: '🦯', description: '简单的皮护腕', requiredLevel: 15, type: 'equipment', slot: 'wristguard', stats: { defense: 2 } },
+            { id: 'iron_wrist', name: '铁护腕', emoji: '🦾', description: '铁制的护腕', requiredLevel: 25, type: 'equipment', slot: 'wristguard', stats: { defense: 5, health: 10 } },
+            { id: 'jade_wrist', name: '玉护腕', emoji: '💚', description: '玉制护腕', requiredLevel: 40, type: 'equipment', slot: 'wristguard', stats: { defense: 10, health: 25 } },
+
+            // 装备物品 - 项链
+            { id: 'copper_necklace', name: '铜项链', emoji: '📿', description: '普通的铜项链', requiredLevel: 15, type: 'equipment', slot: 'necklace', stats: { mana: 5 } },
+            { id: 'silver_necklace', name: '银项链', emoji: '🔗', description: '银制项链', requiredLevel: 30, type: 'equipment', slot: 'necklace', stats: { mana: 15, accuracy: 3 } },
+            { id: 'gold_necklace', name: '金项链', emoji: '⭕', description: '金制项链', requiredLevel: 45, type: 'equipment', slot: 'necklace', stats: { mana: 30, accuracy: 5, evasion: 3 } },
+
+            // 装备物品 - 手套
+            { id: 'cloth_gloves', name: '布手套', emoji: '🧤', description: '简单的布手套', requiredLevel: 15, type: 'equipment', slot: 'gloves', stats: { accuracy: 2 } },
+            { id: 'leather_gloves', name: '皮手套', emoji: '🧥', description: '皮制手套', requiredLevel: 28, type: 'equipment', slot: 'gloves', stats: { accuracy: 5, attack: 3 } },
+            { id: 'dragon_gloves', name: '龙皮手套', emoji: '🐲', description: '龙皮制成的手套', requiredLevel: 42, type: 'equipment', slot: 'gloves', stats: { accuracy: 8, attack: 8, crit: 3 } },
+
+            // 装备物品 - 头盔
+            { id: 'leather_helmet', name: '皮头盔', emoji: '⛑️', description: '简单的皮头盔', requiredLevel: 15, type: 'equipment', slot: 'helmet', stats: { defense: 3, health: 5 } },
+            { id: 'iron_helmet', name: '铁头盔', emoji: '🪖', description: '铁制头盔', requiredLevel: 30, type: 'equipment', slot: 'helmet', stats: { defense: 8, health: 15 } },
+            { id: 'knight_helmet', name: '骑士头盔', emoji: '🛡️', description: '精良的骑士头盔', requiredLevel: 48, type: 'equipment', slot: 'helmet', stats: { defense: 15, health: 30, critDef: 2 } },
+
+            // 装备物品 - 护甲
+            { id: 'cloth_armor', name: '布甲', emoji: '👕', description: '简单的布甲', requiredLevel: 15, type: 'equipment', slot: 'armor', stats: { defense: 4 } },
+            { id: 'leather_armor', name: '皮甲', emoji: '🦺', description: '皮制护甲', requiredLevel: 32, type: 'equipment', slot: 'armor', stats: { defense: 10, health: 20 } },
+            { id: 'plate_armor', name: '板甲', emoji: '🛡️', description: '重型板甲', requiredLevel: 50, type: 'equipment', slot: 'armor', stats: { defense: 20, health: 40, evasion: -3 } },
+
+            // 装备物品 - 护肩
+            { id: 'leather_shoulder', name: '皮护肩', emoji: '🎽', description: '简单的皮护肩', requiredLevel: 15, type: 'equipment', slot: 'shoulder', stats: { defense: 2 } },
+            { id: 'iron_shoulder', name: '铁护肩', emoji: '⚙️', description: '铁制护肩', requiredLevel: 35, type: 'equipment', slot: 'shoulder', stats: { defense: 7, health: 12 } },
+            { id: 'dragon_shoulder', name: '龙鳞护肩', emoji: '🐉', description: '龙鳞制成的护肩', requiredLevel: 52, type: 'equipment', slot: 'shoulder', stats: { defense: 12, health: 25, critDef: 3 } },
+
+            // 装备物品 - 靴子
+            { id: 'cloth_boots', name: '布靴', emoji: '👢', description: '简单的布靴', requiredLevel: 15, type: 'equipment', slot: 'boots', stats: { evasion: 2 } },
+            { id: 'leather_boots', name: '皮靴', emoji: '🥾', description: '皮制靴子', requiredLevel: 30, type: 'equipment', slot: 'boots', stats: { evasion: 5, accuracy: 2 } },
+            { id: 'wind_boots', name: '风神之靴', emoji: '💨', description: '蕴含风之力的靴子', requiredLevel: 45, type: 'equipment', slot: 'boots', stats: { evasion: 10, accuracy: 5 } }
         ];
 
         // 游戏状态
@@ -1133,6 +1652,81 @@
         const clickExpGain = 10; // 点击按钮获得的经验
         let backpack = new Array(25).fill(null); // 背包：25个格子
         let unlockedSlots = 5; // 已解锁的格子数量
+
+        // 装备状态
+        let equippedItems = {
+            weapon: null,
+            wristguard: null,
+            necklace: null,
+            gloves: null,
+            helmet: null,
+            armor: null,
+            shoulder: null,
+            boots: null
+        };
+
+        // 野怪数据（15级后的场景）
+        const monsters = {
+            3: { name: '雪山雪人', emoji: '👹', baseHealth: 80, baseAttack: 8, baseDefense: 3, baseAccuracy: 75, baseEvasion: 15 },
+            4: { name: '洞穴蝙蝠', emoji: '🦇', baseHealth: 100, baseAttack: 10, baseDefense: 4, baseAccuracy: 78, baseEvasion: 18 },
+            5: { name: '都市流氓', emoji: '🥷', baseHealth: 120, baseAttack: 12, baseDefense: 5, baseAccuracy: 80, baseEvasion: 20 },
+            6: { name: '深海巨兽', emoji: '🦈', baseHealth: 150, baseAttack: 15, baseDefense: 6, baseAccuracy: 82, baseEvasion: 22 },
+            7: { name: '沙漠蝎子', emoji: '🦂', baseHealth: 180, baseAttack: 18, baseDefense: 7, baseAccuracy: 84, baseEvasion: 24 },
+            8: { name: '星空魔灵', emoji: '👻', baseHealth: 210, baseAttack: 21, baseDefense: 8, baseAccuracy: 86, baseEvasion: 26 },
+            9: { name: '樱花树妖', emoji: '🌳', baseHealth: 250, baseAttack: 24, baseDefense: 9, baseAccuracy: 88, baseEvasion: 28 },
+            10: { name: '遗迹守卫', emoji: '🗿', baseHealth: 300, baseAttack: 28, baseDefense: 10, baseAccuracy: 90, baseEvasion: 30 },
+            11: { name: '火焰恶魔', emoji: '😈', baseHealth: 350, baseAttack: 32, baseDefense: 11, baseAccuracy: 92, baseEvasion: 32 },
+            12: { name: '彩虹幻兽', emoji: '🦄', baseHealth: 400, baseAttack: 36, baseDefense: 12, baseAccuracy: 94, baseEvasion: 34 },
+            13: { name: '云端天使', emoji: '👼', baseHealth: 460, baseAttack: 40, baseDefense: 13, baseAccuracy: 95, baseEvasion: 36 },
+            14: { name: '水晶魔像', emoji: '💎', baseHealth: 520, baseAttack: 45, baseDefense: 14, baseAccuracy: 96, baseEvasion: 38 },
+            15: { name: '极光巨龙', emoji: '🐲', baseHealth: 600, baseAttack: 50, baseDefense: 15, baseAccuracy: 97, baseEvasion: 40 },
+            16: { name: '魔法巫妖', emoji: '🧙', baseHealth: 680, baseAttack: 55, baseDefense: 16, baseAccuracy: 98, baseEvasion: 42 },
+            17: { name: '远古巨龙', emoji: '🐉', baseHealth: 780, baseAttack: 60, baseDefense: 18, baseAccuracy: 99, baseEvasion: 44 },
+            18: { name: '天界战神', emoji: '⚔️', baseHealth: 900, baseAttack: 65, baseDefense: 20, baseAccuracy: 100, baseEvasion: 45 },
+            19: { name: '虚空领主', emoji: '🌀', baseHealth: 1000, baseAttack: 70, baseDefense: 22, baseAccuracy: 100, baseEvasion: 46 }
+        };
+
+        // 稀有装备掉落表（战胜野怪获得）
+        const rareEquipmentDrops = [
+            // 高级武器
+            { id: 'flame_blade', name: '烈焰之刃', emoji: '🔥', slot: 'weapon', requiredLevel: 20, stats: { attack: 18, crit: 3 } },
+            { id: 'frost_sword', name: '冰霜之剑', emoji: '❄️', slot: 'weapon', requiredLevel: 30, stats: { attack: 28, crit: 4, accuracy: 5 } },
+            { id: 'thunder_god_blade', name: '雷神之刃', emoji: '⚡', slot: 'weapon', requiredLevel: 40, stats: { attack: 40, crit: 6, accuracy: 8 } },
+            { id: 'divine_weapon', name: '神圣之器', emoji: '✨', slot: 'weapon', requiredLevel: 50, stats: { attack: 55, crit: 8, accuracy: 10 } },
+
+            // 高级护腕
+            { id: 'titan_wrist', name: '泰坦护腕', emoji: '💪', slot: 'wristguard', requiredLevel: 25, stats: { defense: 12, health: 30 } },
+            { id: 'dragon_wrist', name: '龙骨护腕', emoji: '🦴', slot: 'wristguard', requiredLevel: 35, stats: { defense: 18, health: 45, attack: 5 } },
+
+            // 高级项链
+            { id: 'soul_necklace', name: '灵魂项链', emoji: '📿', slot: 'necklace', requiredLevel: 30, stats: { mana: 40, accuracy: 8, evasion: 5 } },
+            { id: 'divine_necklace', name: '神圣项链', emoji: '⭕', slot: 'necklace', requiredLevel: 45, stats: { mana: 60, accuracy: 10, evasion: 8, crit: 3 } },
+
+            // 高级手套
+            { id: 'assassin_gloves', name: '刺客手套', emoji: '🥊', slot: 'gloves', requiredLevel: 28, stats: { accuracy: 10, attack: 10, crit: 5 } },
+            { id: 'paladin_gloves', name: '圣骑士手套', emoji: '🛡️', slot: 'gloves', requiredLevel: 42, stats: { accuracy: 12, attack: 12, defense: 5, crit: 4 } },
+
+            // 高级头盔
+            { id: 'dragon_king_helmet', name: '龙王头盔', emoji: '👑', slot: 'helmet', requiredLevel: 35, stats: { defense: 18, health: 40, critDef: 3 } },
+            { id: 'immortal_helmet', name: '不朽头盔', emoji: '⭐', slot: 'helmet', requiredLevel: 50, stats: { defense: 25, health: 50, critDef: 5 } },
+
+            // 高级护甲
+            { id: 'dragon_scale_armor', name: '龙鳞甲', emoji: '🐉', slot: 'armor', requiredLevel: 38, stats: { defense: 25, health: 50, evasion: -2 } },
+            { id: 'divine_armor', name: '神圣护甲', emoji: '🌟', slot: 'armor', requiredLevel: 52, stats: { defense: 30, health: 60, critDef: 4 } },
+
+            // 高级护肩
+            { id: 'phoenix_shoulder', name: '凤凰护肩', emoji: '🔥', slot: 'shoulder', requiredLevel: 40, stats: { defense: 15, health: 30, attack: 8 } },
+            { id: 'titan_shoulder', name: '泰坦护肩', emoji: '⛰️', slot: 'shoulder', requiredLevel: 55, stats: { defense: 20, health: 40, critDef: 5 } },
+
+            // 高级靴子
+            { id: 'lightning_boots', name: '闪电靴', emoji: '⚡', slot: 'boots', requiredLevel: 35, stats: { evasion: 15, accuracy: 8 } },
+            { id: 'teleport_boots', name: '瞬移靴', emoji: '💫', slot: 'boots', requiredLevel: 48, stats: { evasion: 20, accuracy: 10, crit: 2 } }
+        ];
+
+        // 战斗系统状态
+        let battleTimer = null;
+        let battleCountdown = 30;
+        let isBattling = false;
 
         // 玩家属性系统
         const playerAttributes = {
@@ -1170,13 +1764,14 @@
         const gainExpBtn = document.getElementById('gain-exp-btn');
         const levelUpBtn = document.getElementById('level-up-btn');
         const resetBtn = document.getElementById('reset-btn');
+        const quickLevelBtn = document.getElementById('quick-level-btn');
         const sceneSwitchBtn = document.getElementById('scene-switch-btn');
         const scenePanel = document.getElementById('scene-panel');
         const closeSceneBtn = document.getElementById('close-scene-btn');
         const sceneList = document.getElementById('scene-list');
         const currentSceneEmojiEl = document.getElementById('current-scene-emoji');
         const currentSceneNameEl = document.getElementById('current-scene-name');
-        const avatarEl = document.querySelector('.avatar');
+        const playerAvatarEl = document.getElementById('player-avatar');
         const backpackBtn = document.getElementById('backpack-btn');
         const backpackPanel = document.getElementById('backpack-panel');
         const closeBackpackBtn = document.getElementById('close-backpack-btn');
@@ -1185,6 +1780,13 @@
         const attributesPanel = document.getElementById('attributes-panel');
         const closeAttributesBtn = document.getElementById('close-attributes-btn');
         const attributesGrid = document.getElementById('attributes-grid');
+        const equipmentBtn = document.getElementById('equipment-btn');
+        const equipmentPanel = document.getElementById('equipment-panel');
+        const closeEquipmentBtn = document.getElementById('close-equipment-btn');
+        const battleTimerEl = document.getElementById('battle-timer');
+        const battleCountdownEl = document.getElementById('battle-countdown');
+        const battleOverlay = document.getElementById('battle-overlay');
+        const battleLog = document.getElementById('battle-log');
 
         // 更新显示
         function updateDisplay() {
@@ -1207,6 +1809,9 @@
 
             // 更新属性按钮状态（9级解锁）
             attributesBtn.disabled = level < 9;
+
+            // 更新装备按钮状态（15级解锁）
+            equipmentBtn.disabled = level < 15;
 
             // 更新经验速率显示
             expRateEl.textContent = currentExpRate;
@@ -1239,6 +1844,33 @@
             levelEl.style.animation = 'none';
             levelEl.offsetHeight; // 触发重排
             levelEl.style.animation = 'bounce 0.5s ease 3';
+        }
+
+        // 快速升级（调试功能，无视经验）
+        function quickLevelUp() {
+            const oldUnlockedSlots = unlockedSlots;
+            level++;
+            currentExp = 0; // 重置当前经验
+            nextLevelExp = getNextLevelExp(level);
+
+            // 重新计算解锁的格子数
+            unlockedSlots = calculateUnlockedSlots();
+
+            // 检查是否解锁了新的格子
+            if (unlockedSlots > oldUnlockedSlots) {
+                showSlotUnlockNotification(unlockedSlots);
+            }
+
+            // 显示升级通知
+            showLevelUpNotification();
+
+            // 播放升级动画效果
+            levelEl.style.animation = 'none';
+            levelEl.offsetHeight; // 触发重排
+            levelEl.style.animation = 'bounce 0.5s ease 3';
+
+            // 更新显示
+            updateDisplay();
         }
 
         // 显示升级通知
@@ -1278,6 +1910,304 @@
             setTimeout(() => {
                 notification.remove();
             }, 2000);
+        }
+
+        // ===== 战斗系统 =====
+
+        // 启动战斗计时器
+        function startBattleTimer() {
+            // 只有15级以上且在野怪场景才启动
+            if (level < 15 || currentSceneId < 3) {
+                battleTimerEl.classList.remove('active');
+                if (battleTimer) {
+                    clearInterval(battleTimer);
+                    battleTimer = null;
+                }
+                return;
+            }
+
+            battleTimerEl.classList.add('active');
+            battleCountdown = 30;
+            battleCountdownEl.textContent = battleCountdown;
+
+            if (battleTimer) {
+                clearInterval(battleTimer);
+            }
+
+            battleTimer = setInterval(() => {
+                battleCountdown--;
+                battleCountdownEl.textContent = battleCountdown;
+
+                if (battleCountdown <= 0) {
+                    clearInterval(battleTimer);
+                    battleTimer = null;
+                    triggerBattle();
+                }
+            }, 1000);
+        }
+
+        // 停止战斗计时器
+        function stopBattleTimer() {
+            if (battleTimer) {
+                clearInterval(battleTimer);
+                battleTimer = null;
+            }
+            battleTimerEl.classList.remove('active');
+            battleCountdown = 30;
+        }
+
+        // 触发战斗
+        function triggerBattle() {
+            if (isBattling) return;
+            isBattling = true;
+
+            const monster = monsters[currentSceneId];
+            if (!monster) return;
+
+            // 显示战斗界面
+            battleOverlay.style.display = 'flex';
+            battleOverlay.classList.add('active');
+            battleLog.innerHTML = '';
+
+            // 更新野怪显示
+            document.getElementById('monster-emoji').textContent = monster.emoji;
+            document.getElementById('monster-name').textContent = monster.name;
+
+            // 计算玩家和野怪的属性
+            const playerStats = calculatePlayerBattleStats();
+            const monsterStats = calculateMonsterBattleStats(monster);
+
+            // 更新HP显示
+            document.getElementById('player-max-hp').textContent = playerStats.health;
+            document.getElementById('player-hp').textContent = playerStats.health;
+            document.getElementById('monster-max-hp').textContent = monsterStats.health;
+            document.getElementById('monster-hp').textContent = monsterStats.health;
+
+            // 开始战斗循环
+            simulateBattle(playerStats, monsterStats);
+        }
+
+        // 计算玩家战斗属性
+        function calculatePlayerBattleStats() {
+            const baseStats = getAllAttributes();
+            let stats = { ...baseStats };
+
+            // 加上装备属性
+            for (const slot in equippedItems) {
+                const item = equippedItems[slot];
+                if (item && item.stats) {
+                    for (const stat in item.stats) {
+                        if (stats[stat] !== undefined) {
+                            stats[stat] += item.stats[stat];
+                        }
+                    }
+                }
+            }
+
+            return stats;
+        }
+
+        // 计算野怪战斗属性
+        function calculateMonsterBattleStats(monster) {
+            // 野怪属性随场景等级提升
+            const sceneLevel = scenes[currentSceneId].unlockLevel;
+            const levelMultiplier = 1 + (sceneLevel - 15) * 0.1; // 每级强10%
+
+            return {
+                health: Math.floor(monster.baseHealth * levelMultiplier),
+                attack: Math.floor(monster.baseAttack * levelMultiplier),
+                defense: Math.floor(monster.baseDefense * levelMultiplier),
+                accuracy: monster.baseAccuracy,
+                evasion: monster.baseEvasion
+            };
+        }
+
+        // 模拟战斗
+        async function simulateBattle(playerStats, monsterStats) {
+            let playerHP = playerStats.health;
+            let monsterHP = monsterStats.health;
+            const maxPlayerHP = playerStats.health;
+            const maxMonsterHP = monsterStats.health;
+
+            addBattleLog('⚔️ 战斗开始！', 'neutral');
+
+            // 战斗循环，最多20回合
+            for (let round = 1; round <= 20; round++) {
+                await delay(800);
+
+                // 玩家攻击
+                if (Math.random() * 100 < playerStats.accuracy) {
+                    // 命中
+                    if (Math.random() * 100 < monsterStats.evasion) {
+                        addBattleLog('💨 野怪闪避了你的攻击！', 'monster-attack');
+                    } else {
+                        let damage = Math.max(1, playerStats.attack - monsterStats.defense);
+
+                        // 暴击判定
+                        if (Math.random() * 100 < playerStats.crit) {
+                            damage = Math.floor(damage * 1.5);
+                            addBattleLog(`💥 暴击！你造成了 ${damage} 点伤害！`, 'player-attack');
+                        } else {
+                            addBattleLog(`⚔️ 你造成了 ${damage} 点伤害！`, 'player-attack');
+                        }
+
+                        monsterHP -= damage;
+
+                        // 玩家攻击动画
+                        const playerEl = document.getElementById('battle-player');
+                        playerEl.classList.add('attacking-right');
+                        setTimeout(() => playerEl.classList.remove('attacking-right'), 300);
+                    }
+                } else {
+                    addBattleLog('❌ 你的攻击未命中！', 'player-attack');
+                }
+
+                // 更新野怪HP
+                document.getElementById('monster-hp').textContent = Math.max(0, monsterHP);
+
+                // 检查野怪是否死亡
+                if (monsterHP <= 0) {
+                    await delay(500);
+                    addBattleLog('🎉 胜利！你击败了野怪！', 'victory');
+                    await delay(1000);
+                    handleBattleVictory();
+                    return;
+                }
+
+                await delay(800);
+
+                // 野怪攻击
+                if (Math.random() * 100 < monsterStats.accuracy) {
+                    // 命中
+                    if (Math.random() * 100 < playerStats.evasion) {
+                        addBattleLog('💨 你闪避了野怪的攻击！', 'player-attack');
+                    } else {
+                        let damage = Math.max(1, monsterStats.attack - playerStats.defense);
+
+                        // 暴击防御判定
+                        const critDef = playerStats.critDef || 0;
+                        if (Math.random() * 100 < critDef) {
+                            damage = Math.floor(damage * 0.5);
+                            addBattleLog(`🛡️ 暴击防御！你只受到 ${damage} 点伤害！`, 'monster-attack');
+                        } else {
+                            addBattleLog(`👹 野怪造成了 ${damage} 点伤害！`, 'monster-attack');
+                        }
+
+                        playerHP -= damage;
+
+                        // 野怪攻击动画
+                        const monsterEl = document.getElementById('battle-monster');
+                        monsterEl.classList.add('attacking-left');
+                        setTimeout(() => monsterEl.classList.remove('attacking-left'), 300);
+                    }
+                } else {
+                    addBattleLog('✨ 野怪的攻击未命中！', 'monster-attack');
+                }
+
+                // 更新玩家HP
+                document.getElementById('player-hp').textContent = Math.max(0, playerHP);
+
+                // 检查玩家是否死亡
+                if (playerHP <= 0) {
+                    await delay(500);
+                    addBattleLog('💀 失败！你被野怪击败了！', 'defeat');
+                    await delay(1000);
+                    handleBattleDefeat();
+                    return;
+                }
+            }
+
+            // 20回合后，根据HP判断胜负
+            if (playerHP > monsterHP) {
+                addBattleLog('🎉 时间到！你以微弱优势获胜！', 'victory');
+                await delay(1000);
+                handleBattleVictory();
+            } else {
+                addBattleLog('💀 时间到！你惜败！', 'defeat');
+                await delay(1000);
+                handleBattleDefeat();
+            }
+        }
+
+        // 延时函数
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // 添加战斗日志
+        function addBattleLog(message, type) {
+            const entry = document.createElement('div');
+            entry.className = `battle-log-entry ${type}`;
+            entry.textContent = message;
+            battleLog.appendChild(entry);
+            battleLog.scrollTop = battleLog.scrollHeight;
+        }
+
+        // 处理战斗胜利
+        function handleBattleVictory() {
+            // 关闭战斗界面
+            battleOverlay.classList.remove('active');
+            setTimeout(() => {
+                battleOverlay.style.display = 'none';
+            }, 300);
+
+            isBattling = false;
+
+            // 随机选择一个稀有装备
+            const availableEquipment = rareEquipmentDrops.filter(eq => eq.requiredLevel <= level);
+            if (availableEquipment.length > 0) {
+                const randomEquipment = availableEquipment[Math.floor(Math.random() * availableEquipment.length)];
+
+                // 创建完整的装备物品
+                const equipmentItem = {
+                    ...randomEquipment,
+                    type: 'equipment',
+                    description: `击败野怪获得的稀有装备！需要Lv.${randomEquipment.requiredLevel}`
+                };
+
+                // 添加到背包
+                const success = addToBackpack(equipmentItem);
+                if (success) {
+                    // 显示获得装备通知
+                    const notification = document.createElement('div');
+                    notification.className = 'drop-notification';
+                    notification.textContent = `🎉 战斗胜利！获得了稀有装备 ${equipmentItem.emoji} ${equipmentItem.name}！`;
+                    notification.style.background = 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+                    notification.style.top = '340px';
+                    document.body.appendChild(notification);
+
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                }
+            }
+
+            // 重新开始计时
+            startBattleTimer();
+        }
+
+        // 处理战斗失败
+        function handleBattleDefeat() {
+            // 关闭战斗界面
+            battleOverlay.classList.remove('active');
+            setTimeout(() => {
+                battleOverlay.style.display = 'none';
+            }, 300);
+
+            isBattling = false;
+
+            // 显示失败通知
+            const notification = document.createElement('div');
+            notification.className = 'battle-notification';
+            notification.textContent = '💀 实力不济被打死了！';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+
+            // 退回到初始场景
+            switchScene(0);
         }
 
         // 增加经验
@@ -1595,6 +2525,42 @@
             attributesPanel.classList.remove('active');
         }
 
+        // 渲染装备面板
+        function renderEquipmentPanel() {
+            // 更新8个装备槽的显示
+            const slotNames = ['weapon', 'wristguard', 'necklace', 'gloves', 'helmet', 'armor', 'shoulder', 'boots'];
+
+            slotNames.forEach(slotName => {
+                const equippedItem = equippedItems[slotName];
+                const iconEl = document.getElementById(`slot-${slotName}`);
+                const nameEl = document.getElementById(`name-${slotName}`);
+
+                if (equippedItem) {
+                    iconEl.textContent = equippedItem.emoji;
+                    nameEl.textContent = equippedItem.name;
+                    nameEl.classList.remove('empty');
+                } else {
+                    nameEl.textContent = '空';
+                    nameEl.classList.add('empty');
+                }
+            });
+        }
+
+        // 打开装备面板
+        function openEquipmentPanel() {
+            if (level < 15) {
+                showLockedNotification('装备系统需要达到 15 级才能解锁！');
+                return;
+            }
+            renderEquipmentPanel();
+            equipmentPanel.classList.add('active');
+        }
+
+        // 关闭装备面板
+        function closeEquipmentPanel() {
+            equipmentPanel.classList.remove('active');
+        }
+
         // 使用物品
         function useItem(index) {
             const item = backpack[index];
@@ -1614,18 +2580,29 @@
                 const rect = backpackBtn.getBoundingClientRect();
                 showExpGain(item.expValue, rect.right + 10, rect.top);
 
+                // 减少物品数量
+                item.count--;
+                if (item.count <= 0) {
+                    backpack[index] = null;
+                }
+
             } else if (item.type === 'stat') {
                 // 属性物品
                 applyStatBonus(item);
 
                 // 显示属性提升通知
                 showStatBonusNotification(item);
-            }
 
-            // 减少物品数量
-            item.count--;
-            if (item.count <= 0) {
-                backpack[index] = null;
+                // 减少物品数量
+                item.count--;
+                if (item.count <= 0) {
+                    backpack[index] = null;
+                }
+
+            } else if (item.type === 'equipment') {
+                // 装备物品 - 装备而不是消耗
+                equipItem(item, index);
+                return; // 装备不消耗物品，所以直接返回
             }
 
             // 隐藏所有Tips
@@ -1643,6 +2620,52 @@
                 // 为了简单起见，我们暂时显示一个提示
                 console.log(`增加了 ${item.statValue} 点 ${item.statType} 属性`);
             }
+        }
+
+        // 装备物品
+        function equipItem(item, backpackIndex) {
+            const slot = item.slot;
+
+            // 如果该槽位已有装备，先卸下旧装备（返回背包）
+            if (equippedItems[slot]) {
+                const oldItem = equippedItems[slot];
+                addToBackpack(oldItem);
+            }
+
+            // 装备新物品
+            equippedItems[slot] = item;
+
+            // 从背包中移除该物品（因为装备不消耗，但需要从背包移除）
+            backpack[backpackIndex] = null;
+
+            // 显示装备通知
+            showEquipNotification(item);
+
+            // 隐藏所有Tips
+            hideItemTooltip();
+
+            // 重新渲染背包
+            renderBackpack();
+
+            // 如果装备面板打开，重新渲染
+            if (equipmentPanel.classList.contains('active')) {
+                renderEquipmentPanel();
+            }
+        }
+
+        // 显示装备通知
+        function showEquipNotification(item) {
+            const notification = document.createElement('div');
+            notification.className = 'drop-notification';
+            notification.textContent = `🎉 装备了 ${item.emoji} ${item.name}！`;
+            notification.style.top = '300px'; // 放在更下方
+            notification.style.transform = 'translate(-50%, -50%)';
+            notification.style.background = 'linear-gradient(135deg, #E91E63 0%, #C2185B 100%)';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
         }
 
         // 显示属性提升通知
@@ -1691,6 +2714,30 @@
                 effectHtml = `<div class="item-effect">效果：+${item.expValue} 经验</div>`;
             } else if (item.type === 'stat') {
                 effectHtml = `<div class="item-effect" style="color: #9c27b0;">永久提升：+${item.statValue} ${getAttributeName(item.statType)}</div>`;
+            } else if (item.type === 'equipment') {
+                // 装备物品 - 显示所有属性加成
+                const slotNames = {
+                    weapon: '武器',
+                    wristguard: '护腕',
+                    necklace: '项链',
+                    gloves: '手套',
+                    helmet: '头盔',
+                    armor: '护甲',
+                    shoulder: '护肩',
+                    boots: '靴子'
+                };
+                effectHtml = `<div class="item-effect" style="color: #E91E63;">装备部位：${slotNames[item.slot]}</div>`;
+
+                // 显示装备属性
+                if (item.stats) {
+                    for (const [stat, value] of Object.entries(item.stats)) {
+                        if (value > 0) {
+                            effectHtml += `<div class="item-effect" style="color: #4CAF50;">+${value} ${getAttributeName(stat)}</div>`;
+                        } else if (value < 0) {
+                            effectHtml += `<div class="item-effect" style="color: #ff6b6b;">${value} ${getAttributeName(stat)}</div>`;
+                        }
+                    }
+                }
             }
 
             tooltip.innerHTML = `
@@ -1731,6 +2778,9 @@
             updateDisplay();
             renderSceneList();
             closeScenePanel();
+
+            // 切换场景后启动战斗计时器
+            startBattleTimer();
         }
 
         // 更新场景显示
@@ -1738,7 +2788,7 @@
             const scene = scenes[currentSceneId];
             currentSceneEmojiEl.textContent = scene.emoji;
             currentSceneNameEl.textContent = scene.name;
-            avatarEl.textContent = scene.emoji;
+            // 不再更新角色头像，保持独立
         }
 
         // 渲染场景列表
@@ -1819,6 +2869,9 @@
         // 重置按钮点击事件
         resetBtn.addEventListener('click', resetGame);
 
+        // 快速升级按钮点击事件
+        quickLevelBtn.addEventListener('click', quickLevelUp);
+
         // 场景切换按钮点击事件
         sceneSwitchBtn.addEventListener('click', openScenePanel);
 
@@ -1827,6 +2880,19 @@
 
         // 属性按钮点击事件
         attributesBtn.addEventListener('click', openAttributesPanel);
+
+        // 装备按钮点击事件
+        equipmentBtn.addEventListener('click', openEquipmentPanel);
+
+        // 关闭装备面板按钮
+        closeEquipmentBtn.addEventListener('click', closeEquipmentPanel);
+
+        // 点击装备面板外部关闭
+        equipmentPanel.addEventListener('click', (e) => {
+            if (e.target === equipmentPanel) {
+                closeEquipmentPanel();
+            }
+        });
 
         // 关闭背包按钮
         closeBackpackBtn.addEventListener('click', closeBackpack);
@@ -1862,6 +2928,9 @@
         initializeBackpack();
         updateSceneDisplay();
         updateDisplay();
+
+        // 启动战斗计时器
+        startBattleTimer();
     </script>
 </body>
 </html>
