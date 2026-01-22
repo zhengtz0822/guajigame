@@ -595,6 +595,82 @@
             border-color: #667eea;
             box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
         }
+
+        .item-drop-animation {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            z-index: 5000;
+            animation: dropToBackpack 1.5s ease-in-out forwards;
+        }
+
+        @keyframes dropToBackpack {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(var(--mid-x), var(--mid-y)) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--target-x), var(--target-y)) scale(0.8);
+            }
+        }
+
+        .drop-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5000;
+            animation: dropNotificationPop 2s ease-out forwards;
+        }
+
+        @keyframes dropNotificationPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        .backpack-full-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5000;
+            animation: dropNotificationPop 2s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -696,13 +772,106 @@
             { id: 19, name: '混沌虚空', emoji: '🌀', expRate: 50, unlockLevel: 95 }
         ];
 
+        // 场景掉落数据
+        const sceneDrops = {
+            0: [ // 初心之地 (Lv.1)
+                { itemId: 'di_ling_dan', probability: 0.10 }
+            ],
+            1: [ // 静谧森林 (Lv.5)
+                { itemId: 'di_ling_dan', probability: 0.08 },
+                { itemId: 'tian_ling_dan', probability: 0.05 }
+            ],
+            2: [ // 阳光海滩 (Lv.10)
+                { itemId: 'di_ling_dan', probability: 0.06 },
+                { itemId: 'tian_ling_dan', probability: 0.06 },
+                { itemId: 'xiao_huan_dan', probability: 0.04 }
+            ],
+            3: [ // 雪山之巅 (Lv.15)
+                { itemId: 'tian_ling_dan', probability: 0.07 },
+                { itemId: 'xiao_huan_dan', probability: 0.05 },
+                { itemId: 'da_huan_dan', probability: 0.03 }
+            ],
+            4: [ // 神秘洞穴 (Lv.20)
+                { itemId: 'xiao_huan_dan', probability: 0.06 },
+                { itemId: 'da_huan_dan', probability: 0.05 },
+                { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.02 }
+            ],
+            5: [ // 繁华都市 (Lv.25)
+                { itemId: 'da_huan_dan', probability: 0.06 },
+                { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.04 },
+                { itemId: 'xian_lu', probability: 0.03 }
+            ],
+            6: [ // 海底世界 (Lv.30)
+                { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.05 },
+                { itemId: 'xian_lu', probability: 0.05 },
+                { itemId: 'shen_dan', probability: 0.02 },
+                { itemId: 'tai_ji_dan', probability: 0.01 }
+            ],
+            7: [ // 沙漠绿洲 (Lv.35)
+                { itemId: 'xian_lu', probability: 0.06 },
+                { itemId: 'shen_dan', probability: 0.04 },
+                { itemId: 'tai_ji_dan', probability: 0.02 },
+                { itemId: 'hun_dun_dan', probability: 0.01 }
+            ],
+            8: [ // 星空草原 (Lv.40)
+                { itemId: 'shen_dan', probability: 0.05 },
+                { itemId: 'tai_ji_dan', probability: 0.03 },
+                { itemId: 'hun_dun_dan', probability: 0.02 },
+                { itemId: 'qian_kun_dan', probability: 0.01 }
+            ],
+            9: [ // 樱花庭院 (Lv.45)
+                { itemId: 'tai_ji_dan', probability: 0.04 },
+                { itemId: 'hun_dun_dan', probability: 0.03 },
+                { itemId: 'qian_kun_dan', probability: 0.01 }
+            ],
+            10: [ // 远古遗迹 (Lv.50)
+                { itemId: 'tai_ji_dan', probability: 0.05 },
+                { itemId: 'hun_dun_dan', probability: 0.04 },
+                { itemId: 'qian_kun_dan', probability: 0.02 }
+            ],
+            11: [ // 火山秘境 (Lv.55)
+                { itemId: 'hun_dun_dan', probability: 0.05 },
+                { itemId: 'qian_kun_dan', probability: 0.03 }
+            ],
+            12: [ // 彩虹桥 (Lv.60)
+                { itemId: 'hun_dun_dan', probability: 0.06 },
+                { itemId: 'qian_kun_dan', probability: 0.04 }
+            ],
+            13: [ // 云端之上 (Lv.65)
+                { itemId: 'qian_kun_dan', probability: 0.05 }
+            ],
+            14: [ // 水晶宫殿 (Lv.70)
+                { itemId: 'qian_kun_dan', probability: 0.06 }
+            ],
+            15: [ // 极光冰原 (Lv.75)
+                { itemId: 'qian_kun_dan', probability: 0.07 }
+            ],
+            16: [ // 魔法森林 (Lv.80)
+                { itemId: 'qian_kun_dan', probability: 0.08 }
+            ],
+            17: [ // 龙之巢穴 (Lv.85)
+                { itemId: 'qian_kun_dan', probability: 0.09 }
+            ],
+            18: [ // 天界圣域 (Lv.90)
+                { itemId: 'qian_kun_dan', probability: 0.10 }
+            ],
+            19: [ // 混沌虚空 (Lv.95)
+                { itemId: 'qian_kun_dan', probability: 0.12 }
+            ]
+        };
+
         // 物品数据
         const itemTypes = [
             { id: 'di_ling_dan', name: '地灵丹', emoji: '💊', description: '蕴含大地精华的神秘丹药', expValue: 100, requiredLevel: 1 },
             { id: 'tian_ling_dan', name: '天灵丹', emoji: '✨', description: '蕴含天空精华的神秘丹药', expValue: 1000, requiredLevel: 8 },
             { id: 'xiao_huan_dan', name: '小还丹', emoji: '🔮', description: '蕴含生命精华的初级丹药', expValue: 2000, requiredLevel: 11 },
             { id: 'da_huan_dan', name: '大还丹', emoji: '💎', description: '蕴含生命精华的中级丹药', expValue: 5000, requiredLevel: 14 },
-            { id: 'jiu_zhuan_hun_hun_dan', name: '九转还魂丹', emoji: '🌟', description: '蕴含生命精华的高级丹药', expValue: 20000, requiredLevel: 18 }
+            { id: 'jiu_zhuan_hun_hun_dan', name: '九转还魂丹', emoji: '🌟', description: '蕴含生命精华的高级丹药', expValue: 20000, requiredLevel: 18 },
+            { id: 'xian_lu', name: '仙露', emoji: '💧', description: '蕴含仙气的珍贵液体', expValue: 30000, requiredLevel: 22 },
+            { id: 'shen_dan', name: '神丹', emoji: '🔥', description: '蕴含神力的火焰丹药', expValue: 50000, requiredLevel: 26 },
+            { id: 'tai_ji_dan', name: '太极丹', emoji: '☯️', description: '蕴含阴阳之力的终极丹药', expValue: 80000, requiredLevel: 30 },
+            { id: 'hun_dun_dan', name: '混沌丹', emoji: '🌪️', description: '蕴含混沌能量的神秘丹药', expValue: 100000, requiredLevel: 35 },
+            { id: 'qian_kun_dan', name: '乾坤丹', emoji: '🌌', description: '蕴含宇宙之宝的至尊丹药', expValue: 150000, requiredLevel: 40 }
         ];
 
         // 游戏状态
@@ -793,6 +962,7 @@
             const notification = document.createElement('div');
             notification.className = 'level-up-notification';
             notification.textContent = `🎉 升级了！现在是 Lv.${level}！`;
+            notification.style.top = '80px'; // 改为从顶部80px开始
             document.body.appendChild(notification);
 
             setTimeout(() => {
@@ -832,9 +1002,138 @@
             updateDisplay();
         }
 
+        // 检测掉落
+        function checkForDrop(sceneId) {
+            const drops = sceneDrops[sceneId];
+            if (!drops) return;
+
+            for (const drop of drops) {
+                if (Math.random() < drop.probability) {
+                    const item = itemTypes.find(item => item.id === drop.itemId);
+                    if (item) {
+                        addToBackpack(item);
+                        return item;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 添加物品到背包
+        function addToBackpack(item) {
+            // 查找是否已有相同物品
+            let existingSlot = -1;
+            for (let i = 0; i < unlockedSlots; i++) {
+                if (backpack[i] && backpack[i].id === item.id) {
+                    existingSlot = i;
+                    break;
+                }
+            }
+
+            if (existingSlot >= 0) {
+                // 堆叠到已有物品
+                backpack[existingSlot].count++;
+            } else {
+                // 寻找空格子
+                let emptySlot = -1;
+                for (let i = 0; i < unlockedSlots; i++) {
+                    if (!backpack[i]) {
+                        emptySlot = i;
+                        break;
+                    }
+                }
+
+                if (emptySlot >= 0) {
+                    // 添加到空格子
+                    backpack[emptySlot] = {
+                        ...item,
+                        count: 1
+                    };
+                } else {
+                    // 背包满了
+                    showBackpackFullNotification();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // 显示掉落动画
+        function showDropAnimation(item, backpackRect) {
+            const avatarEl = document.querySelector('.avatar');
+            const avatarRect = avatarEl.getBoundingClientRect();
+
+            const dropAnim = document.createElement('div');
+            dropAnim.className = 'item-drop-animation';
+            dropAnim.textContent = item.emoji;
+            dropAnim.style.left = avatarRect.left + avatarRect.width / 2 + 'px';
+            dropAnim.style.top = avatarRect.top + avatarRect.height / 2 + 'px';
+
+            // 计算中间点和目标点，让动画从角色到右上角，避免遮挡中心区域
+            const gameContainer = document.querySelector('.game-container');
+            const containerRect = gameContainer.getBoundingClientRect();
+
+            // 目标点改为游戏容器右上角区域
+            const targetX = containerRect.right - 100 - avatarRect.left - avatarRect.width / 2;
+            const targetY = containerRect.top + 50 - avatarRect.top - avatarRect.height / 2;
+
+            // 中间点稍微偏移，形成弧形
+            const midX = targetX / 2;
+            const midY = (targetY - 100) / 2;
+
+            dropAnim.style.setProperty('--mid-x', midX + 'px');
+            dropAnim.style.setProperty('--mid-y', midY + 'px');
+            dropAnim.style.setProperty('--target-x', targetX + 'px');
+            dropAnim.style.setProperty('--target-y', targetY + 'px');
+
+            document.body.appendChild(dropAnim);
+
+            setTimeout(() => {
+                dropAnim.remove();
+            }, 1500);
+        }
+
+        // 显示掉落通知
+        function showDropNotification(item) {
+            const notification = document.createElement('div');
+            notification.className = 'drop-notification';
+            notification.textContent = `🎉 获得了 ${item.emoji} ${item.name}！`;
+            notification.style.top = '180px'; // 放在更下方，不挡住场景信息
+            notification.style.transform = 'translate(-50%, -50%)'; // 保持居中
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // 显示背包满通知
+        function showBackpackFullNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'backpack-full-notification';
+            notification.textContent = '🔒 背包已满，无法获得更多物品！';
+            notification.style.top = '220px'; // 放在掉落通知下方
+            notification.style.transform = 'translate(-50%, -50%)'; // 保持居中
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
         // 自动经验增长
         setInterval(() => {
             addExp(currentExpRate);
+
+            // 检测掉落
+            const droppedItem = checkForDrop(currentSceneId);
+            if (droppedItem) {
+                const backpackRect = backpackBtn.getBoundingClientRect();
+                showDropAnimation(droppedItem, backpackRect);
+                showDropNotification(droppedItem);
+                renderBackpack();
+            }
         }, 1000); // 每秒增加 currentExpRate 点经验
 
         // 按钮点击事件
@@ -868,45 +1167,7 @@
         function initializeBackpack() {
             backpack = new Array(25).fill(null);
 
-            // 添加10个地灵丹（堆叠在一起）
-            const diLingDanItem = itemTypes[0]; // 地灵丹
-            backpack[0] = {
-                ...diLingDanItem,
-                count: 10
-            };
-
-            // 添加5个天灵丹（堆叠在一起）
-            const tianLingDanItem = itemTypes[1]; // 天灵丹
-            backpack[1] = {
-                ...tianLingDanItem,
-                count: 5
-            };
-
-            // 添加2个小还丹（堆叠在一起）
-            const xiaoHuanDanItem = itemTypes[2]; // 小还丹
-            backpack[2] = {
-                ...xiaoHuanDanItem,
-                count: 2
-            };
-
-            // 添加2个大还丹（堆叠在一起）
-            const daHuanDanItem = itemTypes[3]; // 大还丹
-            backpack[3] = {
-                ...daHuanDanItem,
-                count: 2
-            };
-
-            // 添加2个九转还魂丹（堆叠在一起）
-            const jiuZhuanHunHunDanItem = itemTypes[4]; // 九转还魂丹
-            backpack[4] = {
-                ...jiuZhuanHunHunDanItem,
-                count: 2
-            };
-
-            // 其余格子为空
-            for (let i = 5; i < 25; i++) {
-                backpack[i] = null;
-            }
+            // 背包初始为空，物品通过掉落获得
 
             // 计算已解锁的格子数
             unlockedSlots = calculateUnlockedSlots();
@@ -1004,6 +1265,7 @@
             notification.className = 'level-up-notification';
             notification.textContent = `🎉 解锁了新的背包格子！现在是 ${slotsCount} 个格子！`;
             notification.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            notification.style.top = '140px'; // 放在升级消息下方
             document.body.appendChild(notification);
 
             setTimeout(() => {
@@ -1119,10 +1381,25 @@
                     sceneItem.classList.add('active');
                 }
 
+                let dropInfo = '';
+                if (!isLocked) {
+                    const drops = sceneDrops[scene.id];
+                    if (drops && drops.length > 0) {
+                        const dropNames = drops.map(drop => {
+                            const item = itemTypes.find(item => item.id === drop.itemId);
+                            return item ? item.emoji : '';
+                        }).filter(emoji => emoji).join(' ');
+                        if (dropNames) {
+                            dropInfo = `<div style="font-size: 10px; margin-top: 5px;">掉落: ${dropNames}</div>`;
+                        }
+                    }
+                }
+
                 sceneItem.innerHTML = `
                     <div class="scene-emoji">${isLocked ? '🔒' : scene.emoji}</div>
                     <div class="scene-name">${isLocked ? '???' : scene.name}</div>
                     <div class="scene-rate">${isLocked ? '' : scene.expRate + ' 经验/秒'}</div>
+                    ${dropInfo}
                     ${isLocked ? `<div class="scene-unlock-badge">Lv.${scene.unlockLevel}</div>` : ''}
                 `;
 
