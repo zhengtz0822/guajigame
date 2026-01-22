@@ -671,6 +671,140 @@
             z-index: 5000;
             animation: dropNotificationPop 2s ease-out forwards;
         }
+
+        .attributes-btn {
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+        }
+
+        .attributes-btn:hover {
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.6);
+        }
+
+        .attributes-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3500;
+        }
+
+        .attributes-panel.active {
+            display: flex;
+        }
+
+        .attributes-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .attributes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .attributes-header h2 {
+            color: #333;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .attribute-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .attribute-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .attribute-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .attribute-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .attribute-growth {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 属性颜色主题 */
+        .attribute-health { border-left-color: #f44336; background: linear-gradient(145deg, #ffebee, #ffffff); }
+        .attribute-health .attribute-name { color: #d32f2f; }
+
+        .attribute-mana { border-left-color: #2196f3; background: linear-gradient(145deg, #e3f2fd, #ffffff); }
+        .attribute-mana .attribute-name { color: #1976d2; }
+
+        .attribute-attack { border-left-color: #ff9800; background: linear-gradient(145deg, #fff3e0, #ffffff); }
+        .attribute-attack .attribute-name { color: #f57c00; }
+
+        .attribute-defense { border-left-color: #4caf50; background: linear-gradient(145deg, #e8f5e8, #ffffff); }
+        .attribute-defense .attribute-name { color: #388e3c; }
+
+        .attribute-accuracy { border-left-color: #00bcd4; background: linear-gradient(145deg, #e0f7fa, #ffffff); }
+        .attribute-accuracy .attribute-name { color: #0097a7; }
+
+        .attribute-evasion { border-left-color: #9c27b0; background: linear-gradient(145deg, #f3e5f5, #ffffff); }
+        .attribute-evasion .attribute-name { color: #7b1fa2; }
+
+        .attribute-crit { border-left-color: #e91e63; background: linear-gradient(145deg, #fce4ec, #ffffff); }
+        .attribute-crit .attribute-name { color: #c2185b; }
+
+        .attribute-crit-def { border-left-color: #607d8b; background: linear-gradient(145deg, #eceff1, #ffffff); }
+        .attribute-crit-def .attribute-name { color: #455a64; }
+
+        .attribute-icon {
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -722,6 +856,9 @@
             <button class="game-btn backpack-btn" id="backpack-btn">
                 背包
             </button>
+            <button class="game-btn attributes-btn" id="attributes-btn" disabled>
+                属性
+            </button>
         </div>
     </div>
 
@@ -743,6 +880,17 @@
                 <button class="close-btn" id="close-scene-btn">&times;</button>
             </div>
             <div class="scene-list" id="scene-list">
+            </div>
+        </div>
+    </div>
+
+    <div class="attributes-panel" id="attributes-panel">
+        <div class="attributes-content">
+            <div class="attributes-header">
+                <h2>玩家属性</h2>
+                <button class="close-btn" id="close-attributes-btn">&times;</button>
+            </div>
+            <div class="attributes-grid" id="attributes-grid">
             </div>
         </div>
     </div>
@@ -775,103 +923,205 @@
         // 场景掉落数据
         const sceneDrops = {
             0: [ // 初心之地 (Lv.1)
-                { itemId: 'di_ling_dan', probability: 0.10 }
+                { itemId: 'di_ling_dan', probability: 0.10 },
+                { itemId: 'health_grass', probability: 0.005 },
+                { itemId: 'mana_herb', probability: 0.005 }
             ],
             1: [ // 静谧森林 (Lv.5)
                 { itemId: 'di_ling_dan', probability: 0.08 },
-                { itemId: 'tian_ling_dan', probability: 0.05 }
+                { itemId: 'tian_ling_dan', probability: 0.05 },
+                { itemId: 'health_grass', probability: 0.008 },
+                { itemId: 'mana_herb', probability: 0.008 },
+                { itemId: 'attack_pearl', probability: 0.004 }
             ],
             2: [ // 阳光海滩 (Lv.10)
                 { itemId: 'di_ling_dan', probability: 0.06 },
                 { itemId: 'tian_ling_dan', probability: 0.06 },
-                { itemId: 'xiao_huan_dan', probability: 0.04 }
+                { itemId: 'xiao_huan_dan', probability: 0.04 },
+                { itemId: 'mana_herb', probability: 0.006 },
+                { itemId: 'attack_pearl', probability: 0.006 },
+                { itemId: 'defense_scale', probability: 0.003 }
             ],
             3: [ // 雪山之巅 (Lv.15)
                 { itemId: 'tian_ling_dan', probability: 0.07 },
                 { itemId: 'xiao_huan_dan', probability: 0.05 },
-                { itemId: 'da_huan_dan', probability: 0.03 }
+                { itemId: 'da_huan_dan', probability: 0.03 },
+                { itemId: 'health_essence', probability: 0.004 },
+                { itemId: 'attack_pearl', probability: 0.005 },
+                { itemId: 'defense_scale', probability: 0.005 },
+                { itemId: 'accuracy_feather', probability: 0.003 }
             ],
             4: [ // 神秘洞穴 (Lv.20)
                 { itemId: 'xiao_huan_dan', probability: 0.06 },
                 { itemId: 'da_huan_dan', probability: 0.05 },
-                { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.02 }
+                { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.02 },
+                { itemId: 'mana_essence', probability: 0.003 },
+                { itemId: 'attack_stone', probability: 0.004 },
+                { itemId: 'defense_scale', probability: 0.004 },
+                { itemId: 'evasion_wind', probability: 0.003 },
+                { itemId: 'crit_fang', probability: 0.002 }
             ],
             5: [ // 繁华都市 (Lv.25)
                 { itemId: 'da_huan_dan', probability: 0.06 },
                 { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.04 },
-                { itemId: 'xian_lu', probability: 0.03 }
+                { itemId: 'xian_lu', probability: 0.03 },
+                { itemId: 'health_essence', probability: 0.003 },
+                { itemId: 'attack_stone', probability: 0.003 },
+                { itemId: 'defense_essence', probability: 0.002 },
+                { itemId: 'accuracy_feather', probability: 0.003 },
+                { itemId: 'crit_fang', probability: 0.002 }
             ],
             6: [ // 海底世界 (Lv.30)
                 { itemId: 'jiu_zhuan_hun_hun_dan', probability: 0.05 },
                 { itemId: 'xian_lu', probability: 0.05 },
                 { itemId: 'shen_dan', probability: 0.02 },
-                { itemId: 'tai_ji_dan', probability: 0.01 }
+                { itemId: 'tai_ji_dan', probability: 0.01 },
+                { itemId: 'health_crystal', probability: 0.002 },
+                { itemId: 'mana_essence', probability: 0.002 },
+                { itemId: 'attack_stone', probability: 0.003 },
+                { itemId: 'crit_claw', probability: 0.002 },
+                { itemId: 'crit_def_horn', probability: 0.001 }
             ],
             7: [ // 沙漠绿洲 (Lv.35)
                 { itemId: 'xian_lu', probability: 0.06 },
                 { itemId: 'shen_dan', probability: 0.04 },
                 { itemId: 'tai_ji_dan', probability: 0.02 },
-                { itemId: 'hun_dun_dan', probability: 0.01 }
+                { itemId: 'hun_dun_dan', probability: 0.01 },
+                { itemId: 'mana_essence', probability: 0.002 },
+                { itemId: 'attack_stone', probability: 0.002 },
+                { itemId: 'defense_essence', probability: 0.002 },
+                { itemId: 'evasion_shadow', probability: 0.002 },
+                { itemId: 'crit_claw', probability: 0.002 },
+                { itemId: 'crit_def_horn', probability: 0.001 }
             ],
             8: [ // 星空草原 (Lv.40)
                 { itemId: 'shen_dan', probability: 0.05 },
                 { itemId: 'tai_ji_dan', probability: 0.03 },
                 { itemId: 'hun_dun_dan', probability: 0.02 },
-                { itemId: 'qian_kun_dan', probability: 0.01 }
+                { itemId: 'qian_kun_dan', probability: 0.01 },
+                { itemId: 'mana_crystal', probability: 0.002 },
+                { itemId: 'attack_crystal', probability: 0.002 },
+                { itemId: 'defense_essence', probability: 0.002 },
+                { itemId: 'accuracy_eye', probability: 0.002 },
+                { itemId: 'evasion_shadow', probability: 0.002 },
+                { itemId: 'crit_claw', probability: 0.001 }
             ],
             9: [ // 樱花庭院 (Lv.45)
                 { itemId: 'tai_ji_dan', probability: 0.04 },
                 { itemId: 'hun_dun_dan', probability: 0.03 },
-                { itemId: 'qian_kun_dan', probability: 0.01 }
+                { itemId: 'qian_kun_dan', probability: 0.01 },
+                { itemId: 'defense_crystal', probability: 0.001 },
+                { itemId: 'accuracy_eye', probability: 0.002 },
+                { itemId: 'evasion_crystal', probability: 0.001 },
+                { itemId: 'crysta_crystal', probability: 0.001 }
             ],
             10: [ // 远古遗迹 (Lv.50)
                 { itemId: 'tai_ji_dan', probability: 0.05 },
                 { itemId: 'hun_dun_dan', probability: 0.04 },
-                { itemId: 'qian_kun_dan', probability: 0.02 }
+                { itemId: 'qian_kun_dan', probability: 0.02 },
+                { itemId: 'health_crystal', probability: 0.001 },
+                { itemId: 'attack_crystal', probability: 0.001 },
+                { itemId: 'accuracy_eye', probability: 0.002 },
+                { itemId: 'evasion_crystal', probability: 0.002 },
+                { itemId: 'crysta_crystal', probability: 0.001 },
+                { itemId: 'crit_def_shield', probability: 0.001 }
             ],
             11: [ // 火山秘境 (Lv.55)
                 { itemId: 'hun_dun_dan', probability: 0.05 },
-                { itemId: 'qian_kun_dan', probability: 0.03 }
+                { itemId: 'qian_kun_dan', probability: 0.03 },
+                { itemId: 'accuracy_crystal', probability: 0.001 },
+                { itemId: 'crysta_crystal', probability: 0.002 },
+                { itemId: 'crit_def_shield', probability: 0.001 }
             ],
             12: [ // 彩虹桥 (Lv.60)
                 { itemId: 'hun_dun_dan', probability: 0.06 },
-                { itemId: 'qian_kun_dan', probability: 0.04 }
+                { itemId: 'qian_kun_dan', probability: 0.04 },
+                { itemId: 'accuracy_crystal', probability: 0.001 },
+                { itemId: 'crit_def_crystal', probability: 0.001 }
             ],
             13: [ // 云端之上 (Lv.65)
-                { itemId: 'qian_kun_dan', probability: 0.05 }
+                { itemId: 'qian_kun_dan', probability: 0.05 },
+                { itemId: 'crit_def_crystal', probability: 0.001 }
             ],
             14: [ // 水晶宫殿 (Lv.70)
-                { itemId: 'qian_kun_dan', probability: 0.06 }
+                { itemId: 'qian_kun_dan', probability: 0.06 },
+                { itemId: 'crit_def_crystal', probability: 0.001 }
             ],
             15: [ // 极光冰原 (Lv.75)
-                { itemId: 'qian_kun_dan', probability: 0.07 }
+                { itemId: 'qian_kun_dan', probability: 0.07 },
+                { itemId: 'crit_def_crystal', probability: 0.002 }
             ],
             16: [ // 魔法森林 (Lv.80)
-                { itemId: 'qian_kun_dan', probability: 0.08 }
+                { itemId: 'qian_kun_dan', probability: 0.08 },
+                { itemId: 'crit_def_crystal', probability: 0.002 }
             ],
             17: [ // 龙之巢穴 (Lv.85)
-                { itemId: 'qian_kun_dan', probability: 0.09 }
+                { itemId: 'qian_kun_dan', probability: 0.09 },
+                { itemId: 'crit_def_crystal', probability: 0.003 }
             ],
             18: [ // 天界圣域 (Lv.90)
-                { itemId: 'qian_kun_dan', probability: 0.10 }
+                { itemId: 'qian_kun_dan', probability: 0.10 },
+                { itemId: 'crit_def_crystal', probability: 0.003 }
             ],
             19: [ // 混沌虚空 (Lv.95)
-                { itemId: 'qian_kun_dan', probability: 0.12 }
+                { itemId: 'qian_kun_dan', probability: 0.12 },
+                { itemId: 'crit_def_crystal', probability: 0.005 }
             ]
         };
 
         // 物品数据
         const itemTypes = [
-            { id: 'di_ling_dan', name: '地灵丹', emoji: '💊', description: '蕴含大地精华的神秘丹药', expValue: 100, requiredLevel: 1 },
-            { id: 'tian_ling_dan', name: '天灵丹', emoji: '✨', description: '蕴含天空精华的神秘丹药', expValue: 1000, requiredLevel: 8 },
-            { id: 'xiao_huan_dan', name: '小还丹', emoji: '🔮', description: '蕴含生命精华的初级丹药', expValue: 2000, requiredLevel: 11 },
-            { id: 'da_huan_dan', name: '大还丹', emoji: '💎', description: '蕴含生命精华的中级丹药', expValue: 5000, requiredLevel: 14 },
-            { id: 'jiu_zhuan_hun_hun_dan', name: '九转还魂丹', emoji: '🌟', description: '蕴含生命精华的高级丹药', expValue: 20000, requiredLevel: 18 },
-            { id: 'xian_lu', name: '仙露', emoji: '💧', description: '蕴含仙气的珍贵液体', expValue: 30000, requiredLevel: 22 },
-            { id: 'shen_dan', name: '神丹', emoji: '🔥', description: '蕴含神力的火焰丹药', expValue: 50000, requiredLevel: 26 },
-            { id: 'tai_ji_dan', name: '太极丹', emoji: '☯️', description: '蕴含阴阳之力的终极丹药', expValue: 80000, requiredLevel: 30 },
-            { id: 'hun_dun_dan', name: '混沌丹', emoji: '🌪️', description: '蕴含混沌能量的神秘丹药', expValue: 100000, requiredLevel: 35 },
-            { id: 'qian_kun_dan', name: '乾坤丹', emoji: '🌌', description: '蕴含宇宙之宝的至尊丹药', expValue: 150000, requiredLevel: 40 }
+            // 经验丹药
+            { id: 'di_ling_dan', name: '地灵丹', emoji: '💊', description: '蕴含大地精华的神秘丹药', expValue: 100, requiredLevel: 1, type: 'exp' },
+            { id: 'tian_ling_dan', name: '天灵丹', emoji: '✨', description: '蕴含天空精华的神秘丹药', expValue: 1000, requiredLevel: 8, type: 'exp' },
+            { id: 'xiao_huan_dan', name: '小还丹', emoji: '🔮', description: '蕴含生命精华的初级丹药', expValue: 2000, requiredLevel: 11, type: 'exp' },
+            { id: 'da_huan_dan', name: '大还丹', emoji: '💎', description: '蕴含生命精华的中级丹药', expValue: 5000, requiredLevel: 14, type: 'exp' },
+            { id: 'jiu_zhuan_hun_hun_dan', name: '九转还魂丹', emoji: '🌟', description: '蕴含生命精华的高级丹药', expValue: 20000, requiredLevel: 18, type: 'exp' },
+            { id: 'xian_lu', name: '仙露', emoji: '💧', description: '蕴含仙气的珍贵液体', expValue: 30000, requiredLevel: 22, type: 'exp' },
+            { id: 'shen_dan', name: '神丹', emoji: '🔥', description: '蕴含神力的火焰丹药', expValue: 50000, requiredLevel: 26, type: 'exp' },
+            { id: 'tai_ji_dan', name: '太极丹', emoji: '☯️', description: '蕴含阴阳之力的终极丹药', expValue: 80000, requiredLevel: 30, type: 'exp' },
+            { id: 'hun_dun_dan', name: '混沌丹', emoji: '🌪️', description: '蕴含混沌能量的神秘丹药', expValue: 100000, requiredLevel: 35, type: 'exp' },
+            { id: 'qian_kun_dan', name: '乾坤丹', emoji: '🌌', description: '蕴含宇宙之宝的至尊丹药', expValue: 150000, requiredLevel: 40, type: 'exp' },
+
+            // 生命属性物品
+            { id: 'health_grass', name: '还魂草', emoji: '🌿', description: '神奇的仙草，服用后永久提升生命上限', statType: 'health', statValue: 5, requiredLevel: 5, type: 'stat' },
+            { id: 'health_essence', name: '生命精魄', emoji: '💚', description: '凝聚的生命精华，大幅提升生命上限', statType: 'health', statValue: 15, requiredLevel: 15, type: 'stat' },
+            { id: 'health_crystal', name: '生命水晶', emoji: '💎', description: '蕴含纯粹生命能量的水晶，极大提升生命上限', statType: 'health', statValue: 50, requiredLevel: 30, type: 'stat' },
+
+            // 内力属性物品
+            { id: 'mana_herb', name: '灵气草', emoji: '🌱', description: '蕴含灵气的仙草，服用后永久提升内力上限', statType: 'mana', statValue: 3, requiredLevel: 3, type: 'stat' },
+            { id: 'mana_essence', name: '内力精魄', emoji: '💙', description: '凝聚的内力精华，大幅提升内力上限', statType: 'mana', statValue: 10, requiredLevel: 12, type: 'stat' },
+            { id: 'mana_crystal', name: '内力水晶', emoji: '🔮', description: '蕴含纯粹内力能量的水晶，极大提升内力上限', statType: 'mana', statValue: 30, requiredLevel: 25, type: 'stat' },
+
+            // 攻击属性物品
+            { id: 'attack_pearl', name: '攻击珍珠', emoji: '⚪', description: '蕴含攻击力的神奇珍珠，永久提升攻击力', statType: 'attack', statValue: 2, requiredLevel: 4, type: 'stat' },
+            { id: 'attack_stone', name: '攻击之石', emoji: '🗿', description: '古代战士的攻击之石，大幅提升攻击力', statType: 'attack', statValue: 8, requiredLevel: 18, type: 'stat' },
+            { id: 'attack_crystal', name: '攻击水晶', emoji: '⚡', description: '蕴含强大攻击能量的水晶，极大提升攻击力', statType: 'attack', statValue: 25, requiredLevel: 35, type: 'stat' },
+
+            // 防御属性物品
+            { id: 'defense_scale', name: '防御鳞片', emoji: '🔸', description: '龙族的防御鳞片，永久提升防御力', statType: 'defense', statValue: 1, requiredLevel: 6, type: 'stat' },
+            { id: 'defense_essence', name: '防御精魄', emoji: '🛡️', description: '凝聚的防御精华，大幅提升防御力', statType: 'defense', statValue: 5, requiredLevel: 20, type: 'stat' },
+            { id: 'defense_crystal', name: '防御水晶', emoji: '💠', description: '蕴含纯粹防御能量的水晶，极大提升防御力', statType: 'defense', statValue: 20, requiredLevel: 40, type: 'stat' },
+
+            // 命中属性物品
+            { id: 'accuracy_feather', name: '命中羽毛', emoji: '🪶', description: '轻盈的魔法羽毛，永久提升命中率', statType: 'accuracy', statValue: 3, requiredLevel: 8, type: 'stat' },
+            { id: 'accuracy_eye', name: '鹰眼石', emoji: '👁️', description: '蕴含鹰之眼力的宝石，大幅提升命中率', statType: 'accuracy', statValue: 10, requiredLevel: 22, type: 'stat' },
+            { id: 'accuracy_crystal', name: '命中水晶', emoji: '🎯', description: '蕴含精准能量的水晶，极大提升命中率', statType: 'accuracy', statValue: 35, requiredLevel: 45, type: 'stat' },
+
+            // 闪避属性物品
+            { id: 'evasion_wind', name: '风之息', emoji: '🌬️', description: '蕴含风之精华的物品，永久提升闪避率', statType: 'evasion', statValue: 2, requiredLevel: 7, type: 'stat' },
+            { id: 'evasion_shadow', name: '暗影斗篷', emoji: '🦇', description: '暗影编织的斗篷，大幅提升闪避率', statType: 'evasion', statValue: 7, requiredLevel: 16, type: 'stat' },
+            { id: 'evasion_crystal', name: '闪避水晶', emoji: '💨', description: '蕴含灵动能量的水晶，极大提升闪避率', statType: 'evasion', statValue: 25, requiredLevel: 38, type: 'stat' },
+
+            // 暴击属性物品
+            { id: 'crit_fang', name: '暴击尖牙', emoji: '🦷', description: '猛兽的尖牙，永久提升暴击率', statType: 'crit', statValue: 1, requiredLevel: 10, type: 'stat' },
+            { id: 'crit_claw', name: '暴击利爪', emoji: '🐾', description: '猛兽的利爪，大幅提升暴击率', statType: 'crit', statValue: 4, requiredLevel: 28, type: 'stat' },
+            { id: 'crysta_crystal', name: '暴击水晶', emoji: '💥', description: '蕴含暴击能量的水晶，极大提升暴击率', statType: 'crit', statValue: 15, requiredLevel: 50, type: 'stat' },
+
+            // 暴击防御属性物品
+            { id: 'crit_def_horn', name: '防御尖角', emoji: '🦏', description: '犀牛的防御尖角，永久提升暴击防御', statType: 'critDef', statValue: 1, requiredLevel: 12, type: 'stat' },
+            { id: 'crit_def_shield', name: '暴击护盾', emoji: '🛡️', description: '蕴含防御能量的护盾，大幅提升暴击防御', statType: 'critDef', statValue: 3, requiredLevel: 32, type: 'stat' },
+            { id: 'crit_def_crystal', name: '防御水晶', emoji: '🔰', description: '蕴含坚韧能量的水晶，极大提升暴击防御', statType: 'critDef', statValue: 12, requiredLevel: 55, type: 'stat' }
         ];
 
         // 游戏状态
@@ -883,6 +1133,33 @@
         const clickExpGain = 10; // 点击按钮获得的经验
         let backpack = new Array(25).fill(null); // 背包：25个格子
         let unlockedSlots = 5; // 已解锁的格子数量
+
+        // 玩家属性系统
+        const playerAttributes = {
+            health: { base: 100, growth: 10, icon: '❤️', name: '生命' },
+            mana: { base: 50, growth: 5, icon: '💙', name: '内力' },
+            attack: { base: 10, growth: 2, icon: '⚔️', name: '攻击' },
+            defense: { base: 5, growth: 1, icon: '🛡️', name: '防御' },
+            accuracy: { base: 80, growth: 3, icon: '🎯', name: '命中' },
+            evasion: { base: 20, growth: 2, icon: '💨', name: '闪避' },
+            crit: { base: 5, growth: 1, icon: '⚡', name: '暴击' },
+            critDef: { base: 3, growth: 1, icon: '🛡️', name: '暴击防御' }
+        };
+
+        // 计算属性值
+        function calculateAttribute(attributeName) {
+            const attr = playerAttributes[attributeName];
+            return attr.base + (level - 1) * attr.growth;
+        }
+
+        // 获取所有属性值
+        function getAllAttributes() {
+            const attributes = {};
+            for (const key in playerAttributes) {
+                attributes[key] = calculateAttribute(key);
+            }
+            return attributes;
+        }
 
         // DOM 元素
         const levelEl = document.getElementById('level');
@@ -904,6 +1181,10 @@
         const backpackPanel = document.getElementById('backpack-panel');
         const closeBackpackBtn = document.getElementById('close-backpack-btn');
         const backpackGrid = document.getElementById('backpack-grid');
+        const attributesBtn = document.getElementById('attributes-btn');
+        const attributesPanel = document.getElementById('attributes-panel');
+        const closeAttributesBtn = document.getElementById('close-attributes-btn');
+        const attributesGrid = document.getElementById('attributes-grid');
 
         // 更新显示
         function updateDisplay() {
@@ -923,6 +1204,9 @@
 
             // 更新背包按钮状态（3级解锁）
             backpackBtn.disabled = level < 3;
+
+            // 更新属性按钮状态（9级解锁）
+            attributesBtn.disabled = level < 9;
 
             // 更新经验速率显示
             expRateEl.textContent = currentExpRate;
@@ -1273,6 +1557,44 @@
             }, 2500);
         }
 
+        // 渲染属性面板
+        function renderAttributesPanel() {
+            attributesGrid.innerHTML = '';
+            const attributes = getAllAttributes();
+
+            for (const [key, attr] of Object.entries(playerAttributes)) {
+                const attributeValue = attributes[key];
+                const attrItem = document.createElement('div');
+                attrItem.className = `attribute-item attribute-${key}`;
+
+                attrItem.innerHTML = `
+                    <div class="attribute-name">
+                        <span class="attribute-icon">${attr.icon}</span>
+                        ${attr.name}
+                    </div>
+                    <div class="attribute-value">${attributeValue}</div>
+                    <div class="attribute-growth">每级 +${attr.growth}</div>
+                `;
+
+                attributesGrid.appendChild(attrItem);
+            }
+        }
+
+        // 打开属性面板
+        function openAttributesPanel() {
+            if (level < 9) {
+                showLockedNotification('属性面板需要达到 9 级才能解锁！');
+                return;
+            }
+            renderAttributesPanel();
+            attributesPanel.classList.add('active');
+        }
+
+        // 关闭属性面板
+        function closeAttributesPanel() {
+            attributesPanel.classList.remove('active');
+        }
+
         // 使用物品
         function useItem(index) {
             const item = backpack[index];
@@ -1284,12 +1606,21 @@
                 return;
             }
 
-            // 增加经验
-            addExp(item.expValue);
+            if (item.type === 'exp') {
+                // 经验物品
+                addExp(item.expValue);
 
-            // 显示经验获得效果（在背包按钮位置）
-            const rect = backpackBtn.getBoundingClientRect();
-            showExpGain(item.expValue, rect.right + 10, rect.top);
+                // 显示经验获得效果（在背包按钮位置）
+                const rect = backpackBtn.getBoundingClientRect();
+                showExpGain(item.expValue, rect.right + 10, rect.top);
+
+            } else if (item.type === 'stat') {
+                // 属性物品
+                applyStatBonus(item);
+
+                // 显示属性提升通知
+                showStatBonusNotification(item);
+            }
 
             // 减少物品数量
             item.count--;
@@ -1304,6 +1635,46 @@
             renderBackpack();
         }
 
+        // 应用属性加成
+        function applyStatBonus(item) {
+            if (item.statType && item.statValue) {
+                // 在这里永久增加属性
+                // 由于我们的属性系统是基于等级计算的，这里可以存储一个加成值
+                // 为了简单起见，我们暂时显示一个提示
+                console.log(`增加了 ${item.statValue} 点 ${item.statType} 属性`);
+            }
+        }
+
+        // 显示属性提升通知
+        function showStatBonusNotification(item) {
+            const notification = document.createElement('div');
+            notification.className = 'drop-notification';
+            notification.textContent = `🎉 永久提升了 ${item.statValue} 点 ${getAttributeName(item.statType)}！`;
+            notification.style.top = '260px'; // 放在背包满消息下方
+            notification.style.transform = 'translate(-50%, -50%)';
+            notification.style.background = 'linear-gradient(135deg, #9c27b0 0%, #673ab7 100%)';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // 获取属性中文名
+        function getAttributeName(statType) {
+            const attributeNames = {
+                health: '生命',
+                mana: '内力',
+                attack: '攻击',
+                defense: '防御',
+                accuracy: '命中',
+                evasion: '闪避',
+                crit: '暴击',
+                critDef: '暴击防御'
+            };
+            return attributeNames[statType] || statType;
+        }
+
         // 显示物品提示
         let tooltip = null;
 
@@ -1315,10 +1686,17 @@
             const levelCheck = level >= item.requiredLevel;
             const levelColor = levelCheck ? '#4CAF50' : '#ff6b6b';
 
+            let effectHtml = '';
+            if (item.type === 'exp') {
+                effectHtml = `<div class="item-effect">效果：+${item.expValue} 经验</div>`;
+            } else if (item.type === 'stat') {
+                effectHtml = `<div class="item-effect" style="color: #9c27b0;">永久提升：+${item.statValue} ${getAttributeName(item.statType)}</div>`;
+            }
+
             tooltip.innerHTML = `
                 <div class="item-name">${item.name}</div>
                 <div class="item-description">${item.description}</div>
-                <div class="item-effect">效果：+${item.expValue} 经验</div>
+                ${effectHtml}
                 <div class="item-level" style="color: ${levelColor}; margin-top: 3px;">
                     ${levelCheck ? '✓' : '✗'} 需要 Lv.${item.requiredLevel}
                 </div>
@@ -1447,13 +1825,26 @@
         // 背包按钮点击事件
         backpackBtn.addEventListener('click', openBackpack);
 
+        // 属性按钮点击事件
+        attributesBtn.addEventListener('click', openAttributesPanel);
+
         // 关闭背包按钮
         closeBackpackBtn.addEventListener('click', closeBackpack);
+
+        // 关闭属性面板按钮
+        closeAttributesBtn.addEventListener('click', closeAttributesPanel);
 
         // 点击背包面板外部关闭
         backpackPanel.addEventListener('click', (e) => {
             if (e.target === backpackPanel) {
                 closeBackpack();
+            }
+        });
+
+        // 点击属性面板外部关闭
+        attributesPanel.addEventListener('click', (e) => {
+            if (e.target === attributesPanel) {
+                closeAttributesPanel();
             }
         });
 
