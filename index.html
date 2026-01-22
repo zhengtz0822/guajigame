@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挂机游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .avatar-panel {
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 5px 5px 15px #d9d9d9, -5px -5px 15px #ffffff;
+        }
+
+        .avatar {
+            font-size: 100px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .level-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 20px;
+        }
+
+        .stats-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value.highlight {
+            color: #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .exp-rate {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .level-up-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.5s ease, fadeOut 0.5s ease 2s forwards;
+            z-index: 1000;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        .exp-gain {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            flex: 1;
+            min-width: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .game-btn:active {
+            transform: translateY(0);
+        }
+
+        .game-btn:disabled {
+            background: #cccccc;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-btn:disabled:hover {
+            transform: none;
+        }
+
+        .level-up-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .level-up-btn:hover {
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .insufficient-exp-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.5s ease, fadeOut 0.5s ease 1.5s forwards;
+            z-index: 1000;
+        }
+
+        .debug-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .reset-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .reset-btn:hover {
+            opacity: 1;
+        }
+
+        .scene-switch-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .scene-switch-btn:hover {
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+        }
+
+        .backpack-btn {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .backpack-btn:hover {
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.6);
+        }
+
+        .backpack-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .backpack-panel.active {
+            display: flex;
+        }
+
+        .backpack-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .backpack-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .backpack-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .backpack-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .backpack-slot {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow: inset 2px 2px 5px #d9d9d9, inset -2px -2px 5px #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .backpack-slot:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .backpack-slot.empty {
+            color: #cccccc;
+            font-size: 24px;
+        }
+
+        .backpack-slot.locked {
+            background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+            cursor: not-allowed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backpack-slot.locked::before {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            opacity: 0.5;
+        }
+
+        .backpack-slot .unlock-level {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .backpack-slot .unlock-level::before {
+            content: 'Lv.';
+            font-size: 8px;
+        }
+
+        .backpack-slot .item-count {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .scene-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .scene-panel.active {
+            display: flex;
+        }
+
+        .scene-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .scene-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .scene-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .scene-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .scene-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .scene-item:hover:not(.locked) {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .scene-item.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .scene-item.active .scene-emoji,
+        .scene-item.active .scene-name,
+        .scene-item.active .scene-rate {
+            color: white;
+        }
+
+        .scene-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .scene-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .scene-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .scene-rate {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .scene-locked-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .scene-unlock-badge {
+            background: #ffd700;
+            color: #333;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .current-scene-info {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .current-scene-info .scene-label {
+            color: #1976D2;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .current-scene-info .scene-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .locked-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.5s ease, fadeOut 0.5s ease 1.5s forwards;
+            z-index: 1000;
+        }
+
+        .item-tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 4000;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .item-tooltip .item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .item-tooltip .item-description {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .item-tooltip .item-effect {
+            font-size: 12px;
+            color: #4CAF50;
+            margin-top: 3px;
+        }
+
+        .backpack-slot.clickable {
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .backpack-slot.clickable:hover {
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-controls">
+        <button class="reset-btn" id="reset-btn">重置游戏</button>
+    </div>
+
+    <div class="game-container">
+        <div class="avatar-panel">
+            <div class="avatar">😊</div>
+            <div class="level-display">
+                <span class="level-badge">Lv. <span id="level">1</span></span>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-label">当前场景</div>
+                <div class="current-scene-info">
+                    <div class="scene-label">场景</div>
+                    <div class="scene-value"><span id="current-scene-emoji">😊</span> <span id="current-scene-name">初心之地</span></div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-label">当前经验</div>
+                <div class="stat-value highlight"><span id="current-exp">0</span> / <span id="next-level-exp">100</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-label">经验获取速率</div>
+                <div class="stat-value"><span id="exp-rate">1</span> 经验/秒</div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <button class="game-btn" id="gain-exp-btn" style="position: relative;">
+                获得经验
+            </button>
+            <button class="game-btn level-up-btn" id="level-up-btn">
+                升级
+            </button>
+            <button class="game-btn scene-switch-btn" id="scene-switch-btn">
+                场景切换
+            </button>
+            <button class="game-btn backpack-btn" id="backpack-btn">
+                背包
+            </button>
+        </div>
+    </div>
+
+    <div class="backpack-panel" id="backpack-panel">
+        <div class="backpack-content">
+            <div class="backpack-header">
+                <h2>背包</h2>
+                <button class="close-btn" id="close-backpack-btn">&times;</button>
+            </div>
+            <div class="backpack-grid" id="backpack-grid">
+            </div>
+        </div>
+    </div>
+
+    <div class="scene-panel" id="scene-panel">
+        <div class="scene-content">
+            <div class="scene-header">
+                <h2>选择场景</h2>
+                <button class="close-btn" id="close-scene-btn">&times;</button>
+            </div>
+            <div class="scene-list" id="scene-list">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 场景数据（20个场景，每5级解锁一个）
+        const scenes = [
+            { id: 0, name: '初心之地', emoji: '😊', expRate: 1, unlockLevel: 1 },
+            { id: 1, name: '静谧森林', emoji: '🌲', expRate: 2, unlockLevel: 5 },
+            { id: 2, name: '阳光海滩', emoji: '🏖️', expRate: 3, unlockLevel: 10 },
+            { id: 3, name: '雪山之巅', emoji: '🏔️', expRate: 4, unlockLevel: 15 },
+            { id: 4, name: '神秘洞穴', emoji: '🕳️', expRate: 5, unlockLevel: 20 },
+            { id: 5, name: '繁华都市', emoji: '🏙️', expRate: 6, unlockLevel: 25 },
+            { id: 6, name: '海底世界', emoji: '🐚', expRate: 7, unlockLevel: 30 },
+            { id: 7, name: '沙漠绿洲', emoji: '🌴', expRate: 8, unlockLevel: 35 },
+            { id: 8, name: '星空草原', emoji: '🌌', expRate: 9, unlockLevel: 40 },
+            { id: 9, name: '樱花庭院', emoji: '🌸', expRate: 10, unlockLevel: 45 },
+            { id: 10, name: '远古遗迹', emoji: '🏛️', expRate: 12, unlockLevel: 50 },
+            { id: 11, name: '火山秘境', emoji: '🌋', expRate: 14, unlockLevel: 55 },
+            { id: 12, name: '彩虹桥', emoji: '🌈', expRate: 16, unlockLevel: 60 },
+            { id: 13, name: '云端之上', emoji: '☁️', expRate: 18, unlockLevel: 65 },
+            { id: 14, name: '水晶宫殿', emoji: '💎', expRate: 20, unlockLevel: 70 },
+            { id: 15, name: '极光冰原', emoji: '✨', expRate: 25, unlockLevel: 75 },
+            { id: 16, name: '魔法森林', emoji: '🔮', expRate: 30, unlockLevel: 80 },
+            { id: 17, name: '龙之巢穴', emoji: '🐉', expRate: 35, unlockLevel: 85 },
+            { id: 18, name: '天界圣域', emoji: '⭐', expRate: 40, unlockLevel: 90 },
+            { id: 19, name: '混沌虚空', emoji: '🌀', expRate: 50, unlockLevel: 95 }
+        ];
+
+        // 物品数据
+        const itemTypes = [
+            { id: 'di_ling_dan', name: '地灵丹', emoji: '💊', description: '蕴含大地精华的神秘丹药', expValue: 100, requiredLevel: 1 },
+            { id: 'tian_ling_dan', name: '天灵丹', emoji: '✨', description: '蕴含天空精华的神秘丹药', expValue: 1000, requiredLevel: 8 },
+            { id: 'xiao_huan_dan', name: '小还丹', emoji: '🔮', description: '蕴含生命精华的初级丹药', expValue: 2000, requiredLevel: 11 },
+            { id: 'da_huan_dan', name: '大还丹', emoji: '💎', description: '蕴含生命精华的中级丹药', expValue: 5000, requiredLevel: 14 },
+            { id: 'jiu_zhuan_hun_hun_dan', name: '九转还魂丹', emoji: '🌟', description: '蕴含生命精华的高级丹药', expValue: 20000, requiredLevel: 18 }
+        ];
+
+        // 游戏状态
+        let level = 1;
+        let currentExp = 0;
+        let nextLevelExp = 100;
+        let currentSceneId = 0; // 当前场景ID
+        let currentExpRate = scenes[0].expRate; // 当前经验获取速率
+        const clickExpGain = 10; // 点击按钮获得的经验
+        let backpack = new Array(25).fill(null); // 背包：25个格子
+        let unlockedSlots = 5; // 已解锁的格子数量
+
+        // DOM 元素
+        const levelEl = document.getElementById('level');
+        const currentExpEl = document.getElementById('current-exp');
+        const nextLevelExpEl = document.getElementById('next-level-exp');
+        const progressFill = document.getElementById('progress-fill');
+        const expRateEl = document.getElementById('exp-rate');
+        const gainExpBtn = document.getElementById('gain-exp-btn');
+        const levelUpBtn = document.getElementById('level-up-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const sceneSwitchBtn = document.getElementById('scene-switch-btn');
+        const scenePanel = document.getElementById('scene-panel');
+        const closeSceneBtn = document.getElementById('close-scene-btn');
+        const sceneList = document.getElementById('scene-list');
+        const currentSceneEmojiEl = document.getElementById('current-scene-emoji');
+        const currentSceneNameEl = document.getElementById('current-scene-name');
+        const avatarEl = document.querySelector('.avatar');
+        const backpackBtn = document.getElementById('backpack-btn');
+        const backpackPanel = document.getElementById('backpack-panel');
+        const closeBackpackBtn = document.getElementById('close-backpack-btn');
+        const backpackGrid = document.getElementById('backpack-grid');
+
+        // 更新显示
+        function updateDisplay() {
+            levelEl.textContent = level;
+            currentExpEl.textContent = Math.floor(currentExp);
+            nextLevelExpEl.textContent = nextLevelExp;
+
+            // 更新进度条
+            const progress = (currentExp / nextLevelExp) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            // 更新升级按钮状态
+            levelUpBtn.disabled = currentExp < nextLevelExp;
+
+            // 更新场景切换按钮状态（5级解锁）
+            sceneSwitchBtn.disabled = level < 5;
+
+            // 更新背包按钮状态（3级解锁）
+            backpackBtn.disabled = level < 3;
+
+            // 更新经验速率显示
+            expRateEl.textContent = currentExpRate;
+        }
+
+        // 计算升级所需经验
+        function getNextLevelExp(lvl) {
+            return Math.floor(100 * Math.pow(1.2, lvl - 1));
+        }
+
+        // 升级
+        function levelUp() {
+            const oldUnlockedSlots = unlockedSlots;
+            level++;
+            currentExp = currentExp - nextLevelExp;
+            nextLevelExp = getNextLevelExp(level);
+
+            // 重新计算解锁的格子数
+            unlockedSlots = calculateUnlockedSlots();
+
+            // 检查是否解锁了新的格子
+            if (unlockedSlots > oldUnlockedSlots) {
+                showSlotUnlockNotification(unlockedSlots);
+            }
+
+            // 显示升级通知
+            showLevelUpNotification();
+
+            // 播放升级动画效果
+            levelEl.style.animation = 'none';
+            levelEl.offsetHeight; // 触发重排
+            levelEl.style.animation = 'bounce 0.5s ease 3';
+        }
+
+        // 显示升级通知
+        function showLevelUpNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'level-up-notification';
+            notification.textContent = `🎉 升级了！现在是 Lv.${level}！`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2500);
+        }
+
+        // 显示经验获得效果
+        function showExpGain(amount, x, y) {
+            const expGain = document.createElement('div');
+            expGain.className = 'exp-gain';
+            expGain.textContent = `+${amount}`;
+            expGain.style.left = `${x}px`;
+            expGain.style.top = `${y}px`;
+            document.body.appendChild(expGain);
+
+            setTimeout(() => {
+                expGain.remove();
+            }, 1000);
+        }
+
+        // 显示经验不足通知
+        function showInsufficientExpNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'insufficient-exp-notification';
+            notification.textContent = `❌ 经验不足！还需要 ${nextLevelExp - currentExp} 经验`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // 增加经验
+        function addExp(amount) {
+            currentExp += amount;
+            updateDisplay();
+        }
+
+        // 自动经验增长
+        setInterval(() => {
+            addExp(currentExpRate);
+        }, 1000); // 每秒增加 currentExpRate 点经验
+
+        // 按钮点击事件
+        gainExpBtn.addEventListener('click', (e) => {
+            const rect = gainExpBtn.getBoundingClientRect();
+            const x = e.clientX;
+            const y = e.clientY;
+
+            addExp(clickExpGain);
+            showExpGain(clickExpGain, x, y);
+        });
+
+        // 升级按钮点击事件
+        levelUpBtn.addEventListener('click', () => {
+            if (currentExp >= nextLevelExp) {
+                levelUp();
+            } else {
+                showInsufficientExpNotification();
+            }
+        });
+
+        // 计算解锁的格子数量
+        function calculateUnlockedSlots() {
+            // 初始5个格子，每3级解锁1个，最多25个
+            const baseSlots = 5;
+            const slotsPerLevel = 3;
+            return Math.min(25, baseSlots + Math.floor((level - 1) / slotsPerLevel));
+        }
+
+        // 初始化背包物品
+        function initializeBackpack() {
+            backpack = new Array(25).fill(null);
+
+            // 添加10个地灵丹（堆叠在一起）
+            const diLingDanItem = itemTypes[0]; // 地灵丹
+            backpack[0] = {
+                ...diLingDanItem,
+                count: 10
+            };
+
+            // 添加5个天灵丹（堆叠在一起）
+            const tianLingDanItem = itemTypes[1]; // 天灵丹
+            backpack[1] = {
+                ...tianLingDanItem,
+                count: 5
+            };
+
+            // 添加2个小还丹（堆叠在一起）
+            const xiaoHuanDanItem = itemTypes[2]; // 小还丹
+            backpack[2] = {
+                ...xiaoHuanDanItem,
+                count: 2
+            };
+
+            // 添加2个大还丹（堆叠在一起）
+            const daHuanDanItem = itemTypes[3]; // 大还丹
+            backpack[3] = {
+                ...daHuanDanItem,
+                count: 2
+            };
+
+            // 添加2个九转还魂丹（堆叠在一起）
+            const jiuZhuanHunHunDanItem = itemTypes[4]; // 九转还魂丹
+            backpack[4] = {
+                ...jiuZhuanHunHunDanItem,
+                count: 2
+            };
+
+            // 其余格子为空
+            for (let i = 5; i < 25; i++) {
+                backpack[i] = null;
+            }
+
+            // 计算已解锁的格子数
+            unlockedSlots = calculateUnlockedSlots();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            level = 1;
+            currentExp = 0;
+            nextLevelExp = 100;
+            currentSceneId = 0;
+            currentExpRate = scenes[0].expRate;
+            initializeBackpack();
+            updateSceneDisplay();
+            updateDisplay();
+        }
+
+        // 渲染背包
+        function renderBackpack() {
+            backpackGrid.innerHTML = '';
+
+            backpack.forEach((item, index) => {
+                const slot = document.createElement('div');
+
+                // 检查格子是否已解锁
+                if (index < unlockedSlots) {
+                    slot.className = 'backpack-slot';
+
+                    if (item) {
+                        slot.classList.add('clickable');
+                        slot.textContent = item.emoji;
+                        if (item.count > 1) {
+                            const countBadge = document.createElement('div');
+                            countBadge.className = 'item-count';
+                            countBadge.textContent = item.count;
+                            slot.appendChild(countBadge);
+                        }
+
+                        // 添加点击事件
+                        slot.addEventListener('click', () => useItem(index));
+
+                        // 添加鼠标悬停事件
+                        slot.addEventListener('mouseenter', (e) => showItemTooltip(e, item));
+                        slot.addEventListener('mouseleave', hideItemTooltip);
+                        slot.addEventListener('mousemove', moveItemTooltip);
+                    } else {
+                        slot.classList.add('empty');
+                        slot.textContent = '○';
+                    }
+                } else {
+                    // 锁定的格子
+                    slot.className = 'backpack-slot locked';
+                    const unlockLevel = 5 + index * 3; // 计算解锁等级
+                    const unlockText = document.createElement('div');
+                    unlockText.className = 'unlock-level';
+                    unlockText.textContent = unlockLevel;
+                    slot.appendChild(unlockText);
+                }
+
+                backpackGrid.appendChild(slot);
+            });
+        }
+
+        // 打开背包
+        function openBackpack() {
+            if (level < 3) {
+                showLockedNotification('背包功能需要达到 3 级才能解锁！');
+                return;
+            }
+            renderBackpack();
+            backpackPanel.classList.add('active');
+        }
+
+        // 关闭背包
+        function closeBackpack() {
+            backpackPanel.classList.remove('active');
+        }
+
+        // 显示等级不足提示
+        function showLevelRequirementNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'locked-notification';
+            notification.textContent = `🔒 玩家等级未达到物品需要等级！`;
+            notification.style.background = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // 显示格子解锁通知
+        function showSlotUnlockNotification(slotsCount) {
+            const notification = document.createElement('div');
+            notification.className = 'level-up-notification';
+            notification.textContent = `🎉 解锁了新的背包格子！现在是 ${slotsCount} 个格子！`;
+            notification.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2500);
+        }
+
+        // 使用物品
+        function useItem(index) {
+            const item = backpack[index];
+            if (!item) return;
+
+            // 检查玩家等级是否达到物品要求
+            if (level < item.requiredLevel) {
+                showLevelRequirementNotification();
+                return;
+            }
+
+            // 增加经验
+            addExp(item.expValue);
+
+            // 显示经验获得效果（在背包按钮位置）
+            const rect = backpackBtn.getBoundingClientRect();
+            showExpGain(item.expValue, rect.right + 10, rect.top);
+
+            // 减少物品数量
+            item.count--;
+            if (item.count <= 0) {
+                backpack[index] = null;
+            }
+
+            // 隐藏所有Tips
+            hideItemTooltip();
+
+            // 重新渲染背包
+            renderBackpack();
+        }
+
+        // 显示物品提示
+        let tooltip = null;
+
+        function showItemTooltip(e, item) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'item-tooltip';
+
+            // 检查玩家等级是否满足要求
+            const levelCheck = level >= item.requiredLevel;
+            const levelColor = levelCheck ? '#4CAF50' : '#ff6b6b';
+
+            tooltip.innerHTML = `
+                <div class="item-name">${item.name}</div>
+                <div class="item-description">${item.description}</div>
+                <div class="item-effect">效果：+${item.expValue} 经验</div>
+                <div class="item-level" style="color: ${levelColor}; margin-top: 3px;">
+                    ${levelCheck ? '✓' : '✗'} 需要 Lv.${item.requiredLevel}
+                </div>
+            `;
+            document.body.appendChild(tooltip);
+            moveItemTooltip(e);
+        }
+
+        function moveItemTooltip(e) {
+            if (!tooltip) return;
+            tooltip.style.left = (e.clientX + 10) + 'px';
+            tooltip.style.top = (e.clientY - 10) + 'px';
+        }
+
+        function hideItemTooltip() {
+            if (tooltip) {
+                tooltip.remove();
+                tooltip = null;
+            }
+        }
+
+        // 切换场景
+        function switchScene(sceneId) {
+            const scene = scenes[sceneId];
+            if (!scene || level < scene.unlockLevel) {
+                return;
+            }
+
+            currentSceneId = sceneId;
+            currentExpRate = scene.expRate;
+            updateSceneDisplay();
+            updateDisplay();
+            renderSceneList();
+            closeScenePanel();
+        }
+
+        // 更新场景显示
+        function updateSceneDisplay() {
+            const scene = scenes[currentSceneId];
+            currentSceneEmojiEl.textContent = scene.emoji;
+            currentSceneNameEl.textContent = scene.name;
+            avatarEl.textContent = scene.emoji;
+        }
+
+        // 渲染场景列表
+        function renderSceneList() {
+            sceneList.innerHTML = '';
+
+            scenes.forEach(scene => {
+                const sceneItem = document.createElement('div');
+                sceneItem.className = 'scene-item';
+
+                const isLocked = level < scene.unlockLevel;
+                const isActive = scene.id === currentSceneId;
+
+                if (isLocked) {
+                    sceneItem.classList.add('locked');
+                }
+                if (isActive) {
+                    sceneItem.classList.add('active');
+                }
+
+                sceneItem.innerHTML = `
+                    <div class="scene-emoji">${isLocked ? '🔒' : scene.emoji}</div>
+                    <div class="scene-name">${isLocked ? '???' : scene.name}</div>
+                    <div class="scene-rate">${isLocked ? '' : scene.expRate + ' 经验/秒'}</div>
+                    ${isLocked ? `<div class="scene-unlock-badge">Lv.${scene.unlockLevel}</div>` : ''}
+                `;
+
+                if (!isLocked) {
+                    sceneItem.addEventListener('click', () => switchScene(scene.id));
+                }
+
+                sceneList.appendChild(sceneItem);
+            });
+        }
+
+        // 打开场景面板
+        function openScenePanel() {
+            if (level < 5) {
+                showLockedNotification('场景切换功能需要达到 5 级才能解锁！');
+                return;
+            }
+            renderSceneList();
+            scenePanel.classList.add('active');
+        }
+
+        // 关闭场景面板
+        function closeScenePanel() {
+            scenePanel.classList.remove('active');
+        }
+
+        // 显示功能锁定通知
+        function showLockedNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'locked-notification';
+            notification.textContent = `🔒 ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // 重置按钮点击事件
+        resetBtn.addEventListener('click', resetGame);
+
+        // 场景切换按钮点击事件
+        sceneSwitchBtn.addEventListener('click', openScenePanel);
+
+        // 背包按钮点击事件
+        backpackBtn.addEventListener('click', openBackpack);
+
+        // 关闭背包按钮
+        closeBackpackBtn.addEventListener('click', closeBackpack);
+
+        // 点击背包面板外部关闭
+        backpackPanel.addEventListener('click', (e) => {
+            if (e.target === backpackPanel) {
+                closeBackpack();
+            }
+        });
+
+        // 关闭场景面板按钮
+        closeSceneBtn.addEventListener('click', closeScenePanel);
+
+        // 点击场景面板外部关闭
+        scenePanel.addEventListener('click', (e) => {
+            if (e.target === scenePanel) {
+                closeScenePanel();
+            }
+        });
+
+        // 初始化显示
+        initializeBackpack();
+        updateSceneDisplay();
+        updateDisplay();
+    </script>
+</body>
+</html>
